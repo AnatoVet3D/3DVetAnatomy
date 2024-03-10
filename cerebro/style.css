@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.img-container1 {
+  width: 130px;
+
+}
+
+.img-container2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 122px;
+}
+
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+/* Button style, Para cambiar el estilo de los botones */
+.buttons {
+  margin: 35px 5px;
+  right: 0;
+  top: 44px;
+  z-index: 1;
+  position: absolute;
+}
+
+button {
+  width: 130px;
+  height: 50px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  opacity: 0.8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  margin-top: 2px;
+}
+
+.showButton {
+  background: #1caad9;
+}
+
+.hideButton {
+  background: #888888;
+}
+
+/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  font-weight: bold;
+}
