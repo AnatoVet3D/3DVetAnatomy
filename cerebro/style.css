@@ -8,11 +8,13 @@ iframe {
   border: none;
 }
 
+/* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
   width: 130px;
 
 }
 
+/* Para modificar posición y tamaño Escudo UCM */
 .img-container2 {
   position: absolute;
   bottom: 22px;
@@ -20,6 +22,7 @@ iframe {
   width: 122px;
 }
 
+/* Para elegir opacidad de las imagenes de los logos */
 img {
   width: 100%;
   opacity: 0.8;
@@ -48,10 +51,12 @@ button {
   margin-top: 2px;
 }
 
+/* Para poder elegir el color del boton cuando se enciende */
 .showButton {
   background: #1caad9;
 }
 
+/* Para poder elegir el color del boton cuando se apaga */
 .hideButton {
   background: #888888;
 }
