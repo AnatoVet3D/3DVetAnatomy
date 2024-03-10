@@ -3,7 +3,8 @@ const model = '0b924d86cdbb464a92dc429c89c690e0'; // Modelo de referencia a Sket
 const filteredNodes = {}; // Objeto para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
 let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
 
-
+//INICIO Sketchfab
+//Asi se llama a la versión de api que esté actualmente
 iframe = document.getElementById('api-frame');
 client = new Sketchfab( iframe);
 
@@ -12,7 +13,8 @@ error = function () {
 },
 
 success = function (api) {
-  apiRef = api;
+  apiRef = api; //Aquí ya estamos nombrando a la variable creada por nosotros 
+                //para poder usarla fuera de lo de Sketchfab
   api.start();
   // Wait for viewer to be ready
   api.addEventListener('viewerready', function () {
@@ -22,7 +24,7 @@ success = function (api) {
         for ( const prop in nodes ) {
           if ( nodes.hasOwnProperty( prop ) ) {
             const name = nodes[ prop ].name;
-            filteredNodes[name] = { 
+            filteredNodes[name] = {   //Aquí va rellenando nuestro objeto creado arriba
               show: true, 
               instanceId : nodes[prop].instanceID 
             };
@@ -42,8 +44,10 @@ client.init(model, {
   watermark: 1,
   supersample: 0
 });
+//FIN Sketchfab
 
-
+// Funciones Propias
+//creadas para solo tener que llamarlas desde el .HTML
 function showAndHide(nodeName, buttonId) {
   const btn = document.getElementById(buttonId);
   filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
