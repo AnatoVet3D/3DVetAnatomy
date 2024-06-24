@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Para modificar posición y tamaño boton veterinaria UCM */
+.img-container1 {
+  position: absolute;
+  margin: 0px 5px;
+  top: 45px;
+  width: 150px;
+  right: 0px;
+}
+
+/* Para modificar posición y tamaño Escudo UCM */
+.img-container2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 122px;
+}
+
+/* Para elegir opacidad de las imagenes de los logos */
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+/* Button style, Para cambiar el estilo de los botones */
+.buttons {
+  position: absolute;
+  margin: 35px 5px;
+  right: 0;
+  top: 45px;
+  z-index: 1;
+}
+
+button {
+  width: 200px;
+  height: 38px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  opacity: 0.8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Para poder elegir el color del boton cuando se enciende */
+.showButton {
+  background: #1caad9;
+}
+
+/* Para poder elegir el color del boton cuando se apaga */
+.hideButton {
+  background: #888888;
+}
+
+/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  font-weight: bold;
+}
+
+#keyM {height: 40px;}

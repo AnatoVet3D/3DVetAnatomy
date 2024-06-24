@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encéfalo Felino - Regiones</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame"
+    sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <div class="img-container1"><img src="../assets/img/boton-vet-ucm.png"></div>
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+    <button class="showButton" id="keyE" onclick="showAndHide('E', 'keyE')">Corteza cerebral</button>
+    <button class="showButton" id="keyF" onclick="showAndHide('F', 'keyF')">Cerebelo</button>
+    <button class="showButton" id="keyC" onclick="showAndHide('C', 'keyC')">Ventrículos laterales</button>
+    <button class="showButton" id="keyK" onclick="showAndHide('K', 'keyK')">Núcleo caudado</button>
+    <button class="showButton" id="keyO" onclick="showAndHide('O', 'keyO')">Hipocampo</button>
+    <button class="showButton" id="keyH" onclick="showAndHide('H', 'keyH')">Tercer ventrículo</button>
+    <button class="showButton" id="keyM" onclick="showAndHide('M', 'keyM')">Techo del mesencéfalo (colículos)</button>
+    <button class="showButton" id="keyN" onclick="showAndHide('N', 'keyN')">Tálamo</button>
+    <button class="showButton" id="keyI" onclick="showAndHide('I', 'keyI')">Hipotálamo</button>
+    <button class="showButton" id="keyA" onclick="showAndHide('A', 'keyA')">Sustancia gris periacueductal</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyB" onclick="showAndHide('B', 'keyB')">Acueducto mesencefálico</button>
+    <button class="showButton" id="keyJ" onclick="showAndHide('J', 'keyJ')">Pedúnculos cerebrales</button>
+    <button class="showButton" id="keyD" onclick="showAndHide('D', 'keyD')">Cuarto ventrículo</button>
+    <button class="showButton" id="keyG" onclick="showAndHide('G', 'keyG')">Puente</button>
+    <button class="showButton" id="keyL" onclick="showAndHide('L', 'keyL')">Pirámides</button>
+  </div>
+
+  <div class="img-container2"> <!-- logo esquina -->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.5.1.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
