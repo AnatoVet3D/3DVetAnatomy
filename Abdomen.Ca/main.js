@@ -102,7 +102,7 @@ function success(api) {
         //Bucle: cada 0.5 secundos comprueba la orientación de la vista y, si es el caso, da la vuelta a las tre etiquetas
         setInterval(function () {
           getAzimuth();
-          let orientation = (azimuth >= -3.0738 && azimuth <= 0.0296) ? -Math.PI / 2 : Math.PI / 2;
+          let orientation = (azimuth >= -1.6461 && azimuth <= 1.4736) ? -Math.PI / 2 : Math.PI / 2;
           let node = idNodes[listedKeys['keyY2'].nodeName];
           api.rotate(node, [orientation, 0, 1, 0], { duration: 0, easing: 'easeOutQuad' });
           node = idNodes[listedKeys['keyY3'].nodeName];
@@ -121,20 +121,23 @@ function success(api) {
 
     //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
     const XYZa = [  
-      [0.1542, -0.4590, 0.0947],
-      [-0.3681, -0.1279, 0.0145],
-      [0.0453, 0.3896, 0.0557],
-      [0.5250, 0.0330, 0.0929]
+      [-0.0573, -1.0648, 0.0359],
+      [-1.0623, 0.1739, 0.0266],
+      [0.0597, 0.9722, 0.1828],
+      [1.1125, -0.0995, 0.2066]
     ];
 
     //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
     const XYZb = [
-      [0.1290, -0.0573, -0.0075],
-      [0.0462, -0.0998, 0.0149],
-      [0.0413, -0.0222, 0.0025],
-      [0.1218, -0.0075, 0.0025]
+      [0.0472, 0.0512, 0.0183],
+      [0.0400, -0.0297, 0.0207],
+      [-0.0320, -0.0237, 0.0160],
+      [-0.0964, 0.0682, -0.0081]
     ];
-
+    
+    //Al abrirse el modelo, pone la vista estandar del lado izquierdo
+    api.setCameraLookAt(XYZa[3], XYZb[3], 2);
+    
     //Hace girar cámara 90º en sentido horario, mirando hacia el lado izquierdo, posterior, derecho o frontal
     //Primero comprueba en qué sector se encuentra, luego gira al siguiente
     buttonA.addEventListener('click', function () {
