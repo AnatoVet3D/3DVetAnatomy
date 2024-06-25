@@ -102,20 +102,25 @@ function success(api) {
         //Bucle: cada 0.5 secundos comprueba la orientación de la vista y, si es el caso, da la vuelta a las tre etiquetas
         setInterval(function () {
           getAzimuth();
-          let orientation = (azimuth >= -1.6461 && azimuth <= 1.4736) ? -Math.PI / 2 : Math.PI / 2;
-          let node = idNodes[listedKeys['keyY2'].nodeName];
-          api.rotate(node, [orientation, 0, 1, 0], { duration: 0, easing: 'easeOutQuad' });
-          node = idNodes[listedKeys['keyY3'].nodeName];
-          api.rotate(node, [orientation, 0, 1, 0], { duration: 0, easing: 'easeOutQuad' });
-          node = idNodes[listedKeys['keyY4'].nodeName];
-          api.rotate(node, [orientation, 0, 1, 0], { duration: 0, easing: 'easeOutQuad' });
-        }, 500);
+              if ( azimuth>=-1.6461 && azimuth<=1.4736 ) {orientation = -Math.PI/2}
+              else                                     {orientation = Math.PI/2};
+              node = idNodes[listedKeys['keyY2'].nodeName]
+              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
+              node = idNodes[listedKeys['keyY3'].nodeName]
+              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
+              node = idNodes[listedKeys['keyY4'].nodeName]
+              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
+            }, 500); //time interval = 500 ms
       }
     });
 
     function getAzimuth() {
       api.getCameraLookAt(function (err, camera) {
-        azimuth = Math.atan2(camera.position[1] - camera.target[1], camera.position[0] - camera.target[0]);
+            var Cx = camera.position[0];
+            var Cy = camera.position[1];
+            var Tx = camera.target[0];
+            var Ty = camera.target[1];
+            azimuth = Math.atan2(Cy-Ty, Cx-Tx);
       });
     }
 
@@ -144,18 +149,24 @@ function success(api) {
       getAzimuth();
 
       //convierte el azimuth de la cámara en un índice de vista: 0=posterior, 1=izquierda, 2=anterior, 3=derecha
-      let XYZi = Math.round((Math.PI - azimuth) / (Math.PI / 2)) - 1;
-      XYZi = XYZi === -1 ? 3 : XYZi < 3 ? XYZi + 1 : 0;
-      api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
+          let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
+          if (XYZi == -1) {XYZi = 3}
+
+          if (XYZi < 3) { XYZi ++ }
+          else          { XYZi = 0 };
+          api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
     });
 
     //Hace girar la cámara 90º en sentido antihorario, mirando hacia el lado izquierdo, frontal, derecho o posterior
     //Primero comprueba en qué sector se encuentra, luego gira al siguiente sector
     buttonB.addEventListener('click', function () {
       getAzimuth();
-      let XYZi = Math.round((Math.PI - azimuth) / (Math.PI / 2)) - 1;
-      XYZi = XYZi === -1 ? 3 : XYZi > 0 ? XYZi - 1 : 3;
-      api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
+          let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
+          if (XYZi == -1) {XYZi = 3}
+
+          if (XYZi > 0) { XYZi -- }
+          else          { XYZi = 3 };
+          api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
     });
 
     //Abre una ventana con informacion de uso del visor
