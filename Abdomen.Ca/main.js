@@ -83,6 +83,7 @@ function success(api) {
     // Get the object nodes
     api.getNodeMap(function (err, nodes) {
       if (!err) {
+        console.log(nodes);
         for (const prop in nodes) {
           if (nodes.hasOwnProperty(prop)) {
             const name = nodes[prop].name.split('_')[0];  //Nombre base, sin nombre de textura (_...)
@@ -111,6 +112,15 @@ function success(api) {
               node = idNodes[listedKeys['keyY4'].nodeName]
               api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
             }, 500); //time interval = 500 ms
+      }
+
+      //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
+      for (let i = 0; i<8; i++){
+        apiRef.hideAnnotation(i, function(err, index) {
+          if (!err) {
+              window.console.log('Hiding annotation', index + 1);
+          }
+      });
       }
     });
 
@@ -229,6 +239,31 @@ function showAndHide(key) {
     if (key === "keyR") { displayVenas(false); }
   }
 }
+
+//Para mostrar/ocultar las anotaciones cuando se muestra/apaga pestaña "Exploración"
+let showToolTip=false;
+function toogleToolTips(){
+if (showToolTip){
+  for (let i = 0; i<8; i++){
+    apiRef.hideAnnotation(i, function(err, index) {
+      if (!err) {
+          window.console.log('Hiding annotation', index + 1);
+      }
+  });
+  }
+} else {
+  for (let i = 0; i<8; i++){
+    apiRef.showAnnotation(i, function(err, index) {
+      if (!err) {
+          window.console.log('Showing annotation', index + 1);
+      }
+  });
+}
+}
+showToolTip=!showToolTip
+}
+
+
 
 function displayArterias(show) {
   const keys = ["keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8"];
