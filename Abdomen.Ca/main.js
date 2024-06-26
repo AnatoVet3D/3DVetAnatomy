@@ -38,7 +38,7 @@ const listedKeys = {
   'keyS2': { kGroup: 'key4', Name: 'V. Ilíaca Externa', nodeName: 'Vena Iliaca Externa' },
   'keyS3': { kGroup: 'key4', Name: 'V. Ilíaca Interna', nodeName: 'Vena Iliaca Interna' },
   'keyT': { kGroup: 'key4', Name: 'V. Porta', nodeName: 'Vena Porta' },
-  'keyU': { kGroup: 'key4', Name: 'Linfonódulos Linfáticos', nodeName: 'Nodulos Linfaticos' },
+  'keyU': { kGroup: 'key4', Name: 'Linfonódulos', nodeName: 'Nodulos Linfaticos' },
   'keyV': { kGroup: 'key5', Name: 'Glándulas Adrenales', nodeName: 'Glandulas Adrenales' },
   'keyW': { kGroup: 'key5', Name: 'Bazo', nodeName: 'Bazo' },
   'keyX': { kGroup: 'keyX', Name: 'Perro', nodeName: 'Perro' },
@@ -83,7 +83,6 @@ function success(api) {
     // Get the object nodes
     api.getNodeMap(function (err, nodes) {
       if (!err) {
-        console.log(nodes);
         for (const prop in nodes) {
           if (nodes.hasOwnProperty(prop)) {
             const name = nodes[prop].name.split('_')[0];  //Nombre base, sin nombre de textura (_...)
