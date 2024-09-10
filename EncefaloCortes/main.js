@@ -1,4 +1,4 @@
-var model = 'c85155ac62ed42cc84f86f72175ef07c', // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
+var model = '53455848a3784ca69e471c6ddb92be87', // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
 
 // Buttons
 buttonA = document.getElementById('keyA'),
