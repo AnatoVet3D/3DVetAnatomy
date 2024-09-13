@@ -11,7 +11,10 @@ iframe {
 /* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
   width: 130px;
-
+  margin: 0px 5px;
+  top: 45px;
+  width: 150px;
+  margin-left: 38px;
 }
 
 /* Para modificar posición y tamaño Escudo UCM */
