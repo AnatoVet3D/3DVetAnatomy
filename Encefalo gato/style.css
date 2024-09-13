@@ -74,3 +74,12 @@ button:active {
 }
 
 #keyM {height: 40px;}
+
+/*Para adaptar los botones a anchos de pantalla más pequeños, las dimensiones son a ojo*/
+@media (max-width:600px){
+  button{
+    width: 100px;
+    height: 44px;
+  }
+  #keyM {height: 66px;} 
+}
