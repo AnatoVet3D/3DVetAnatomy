@@ -25,6 +25,14 @@ iframe {
   width: 122px;
 }
 
+/* Para modificar posición y tamaño Creative Commons*/
+.img-container3 {
+  position: absolute;
+  bottom: 12px;
+  right: 22px;
+  width: 122px;
+}
+
 /* Para elegir opacidad de las imagenes de los logos */
 img {
   width: 100%;
