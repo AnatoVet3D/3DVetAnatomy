@@ -55,7 +55,7 @@ for (let i = 0; i < labelsHTML.length; i++) {
   labelsFor[labelsHTML[i].getAttribute("for")] = i;
 }
 
-// Inserta en cada etiqueta de un órgano, el nombre del órgano mismo
+// Inserta en cada etiqueta de un órgano, el nombre de éste
 for (let key in listedKeys) {
   const index = labelsFor[key];
   if (index) { labelsHTML[index].innerText = listedKeys[key].Name; }
@@ -218,10 +218,10 @@ client.init(model, {
   watermark: 1,
   supersample: 0
 });
-//FIN Sketchfab
 
 // Funciones Propias
 //creadas para solo tener que llamarlas desde el .HTML
+//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(key) {
   const node = listedKeys[key].nodeName;
   const group = listedKeys[key].kGroup;
@@ -239,7 +239,7 @@ function showAndHide(key) {
   }
 }
 
-//Para mostrar/ocultar las anotaciones cuando se muestra/apaga pestaña "Exploración"
+//Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga pestaña "Exploración"
 let showToolTip=false;
 function toogleToolTips(){
 if (showToolTip){
@@ -263,7 +263,7 @@ showToolTip=!showToolTip
 }
 
 
-
+// Muestra nombres de arterias/venas en la "caja"
 function displayArterias(show) {
   const keys = ["keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8"];
   for (const key of keys) {

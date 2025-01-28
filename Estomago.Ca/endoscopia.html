@@ -1,0 +1,55 @@
+ <!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estómago Cánido. Endoscopia</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" 
+    allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <div class="images"> <!-- Imagenes/nombres que aparecen/desaparecen al clickar -->
+    <label id="label1" hidden></label>
+    <img id="image1" hidden></img>
+  </div>
+
+  <div class="buttons"> <!-- botones para interactuar -->
+    <div class="img-container1"> <!-- Si logo encima de letras -->
+      <img src="../assets/img/boton-vet-ucm.png">
+    </div>
+    <div>
+      <button id="keyA"><span class="material-symbols-outlined">nightlight</span></button>
+      <button id="keyC"><span class="material-symbols-outlined">photo_camera</span></button>
+      <button id="keyB"><span class="material-symbols-outlined">mode_night</span></button>
+    </div>
+    <div>    
+      <button id="keyD"><span class="material-symbols-outlined">info</span></button>
+      <button id="keyE1"><span class="material-symbols-outlined">replay</span></button>
+      <button id="keyE2" hidden><span class="material-symbols-outlined">forward_media</span></button>
+      <button id="keyF1"><span class="material-symbols-outlined">place_item</span></button>
+      <button id="keyF2" hidden><span class="material-symbols-outlined">ios_share</span></button>
+    </div>
+    <div>
+      <button id="keyG"><span class="material-symbols-outlined">keyboard_double_arrow_left</span></button>
+      <button id="keyI">1</button>
+      <button id="keyH"><span class="material-symbols-outlined">keyboard_double_arrow_right</span></button>
+    </div>
+  </div>
+  
+  <div class="img-container2"> <!-- logo esquina inferior-->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
+    <img src="../assets/img/CreativeCommons.png">
+  </div>
+
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -48,6 +48,8 @@ client.init(model, {
 
 // Funciones Propias
 //creadas para solo tener que llamarlas desde el .HTML
+
+//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(nodeName, buttonId) {
   const btn = document.getElementById(buttonId);
   filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
