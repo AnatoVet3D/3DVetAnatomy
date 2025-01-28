@@ -3,19 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomía 3D UCM</title>
+    <title>3D Vet Anatomy</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<!-- Aquí tendríamos que ir añadiendo una referencia 
-    a cada uno de los modelos que vamos metiendo en GitHub -->
-<body> 
-    <!-- Esto se podría adaptar para que se viera como una página web, no que solo salgan enlaces -->
-    <div>
-        <a href="./EncefaloPerro/cerebro.html">Encéfalo Cánido - Regiones</a>
-        <a href="./Encefalo gato/gato.html">Encéfalo Felino - Regiones</a>
-        <a href="./Encefalo conejo/index.html">Encéfalo Lagomorfo - Regiones</a>
-        <a href="./EncefaloCortes/cerebro1_RM.html">Encéfalo Cánido - Cortes Histológicos</a>
-        <a href="./Abdomen.Ca/index.html">Abdomen Cánido</a>
-        <a href="./Estomago.Ca/endoscopia.html">Estómago Cánido</a>
+<body>
+    <header>
+        <h1>3D Vet Anatomy - Repositorio de Visores</h1>
+    </header>
+
+    <div class="container">
+        <h2>Sistema Digestivo</h2>
+        <div class="group">
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/AbdomenCanido.jpg" alt="Abdomen Canino">
+                <a href="./Abdomen.Ca/index.html">Abdomen Canino</a>
+            </div>
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/EstomagoCanido.jpg" alt="Estómago Canino">
+                <a href="./Estomago.Ca/endoscopia.html">Estómago Canino</a>
+            </div>
+        </div>
     </div>
+
+    <div class="container">
+        <h2>Encéfalos</h2>
+        <div class="group">
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/EncefaloConejo.jpg" alt="Encéfalo Conejo">
+                <a href="./Encefalo conejo/index.html">Encéfalo Conejo</a>
+            </div>
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/EncefaloFelino.jpg" alt="Encéfalo Gato">
+                <a href="./Encefalo gato/gato.html">Encéfalo Gato</a>
+            </div>
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/EncefaloCanido.jpg" alt="Encéfalo Perro">
+                <a href="./EncefaloPerro/cerebro.html">Encéfalo Perro</a>
+            </div>
+            <div class="card">
+                <img src="assets/img/Imagenes Inicio/EncefaloCortesCanido.jpg" alt="Cortes de Encéfalo">
+                <a href="./EncefaloCortes/cerebro1_RM.html">Cortes de Encéfalo</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <img src="assets/img/logo-ucm.png" alt="Escudo Complutense" class="logo">
+        <p>Todos los derechos reservados - Creative Commons</p>
+        <img src="assets/img/CreativeCommons.png" alt="Creative Commons">
+    </footer>
 </body>
 </html>

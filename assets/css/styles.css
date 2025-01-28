@@ -1,0 +1,94 @@
+/*CSS de página inicio*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background-color: #007b00;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header img {
+    height: 50px;
+    vertical-align: middle;
+}
+
+.container {
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1 1 calc(33.333% - 1rem);
+    max-width: calc(33.333% - 1rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.card a {
+    text-decoration: none;
+    color: #007b00;
+    font-weight: bold;
+    margin-top: auto;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #007b00;
+    color: white;
+}
+
+footer img {
+    height: 50px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+footer .logo {
+    height: 100px;
+    display: block;
+    margin: 0 auto 1rem;
+}
+
+/*FIN CSS de página inicio*/
