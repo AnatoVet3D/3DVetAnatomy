@@ -11,7 +11,6 @@ iframe {
 /* Para elegir opacidad de las imagenes de los logos */
 img {
   width: 100%;
-  opacity: 0.8;
 }
 
 /* Para modificar posición y tamaño boton veterinaria UCM */
@@ -68,6 +67,7 @@ label {
   right: 0;
   top: 44px;
   width: 210px;
+  opacity: 0.8;
   z-index: 1;
   position: absolute;
 }
