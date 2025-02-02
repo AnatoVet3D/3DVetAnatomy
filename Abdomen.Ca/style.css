@@ -39,6 +39,16 @@ img {
   width: 122px;
 }
 
+/*Tapete botones Sketchfab*/
+.fill{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  height: 50px;
+  width: 200px;
+}
+
 /* Para cambiar los espacios entre las líneas de botones */
 p {
   margin-top: 5px;
