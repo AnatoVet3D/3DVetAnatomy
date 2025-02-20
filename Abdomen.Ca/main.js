@@ -186,7 +186,7 @@ function success(api) {
         "- Botón izquierdo: gira el modelo\n" +
         "- Botón central: desplaza el modelo\n" +
         "- Girar rueda: zoom\n" +
-        "- Clic en un órgano: muestra el nombre del órgano\n" +
+        "- Clic en un órgano: muestra el nombre del órgano en rojo (esquina superior dch) \n" +
         "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
         "- Clic en flechas de giro: giran el modelo en las 4 vistas anatómicas\n" +
         "- Opciones del menú: encienden/apagan un órgano o grupo de órganos"
