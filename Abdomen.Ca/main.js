@@ -24,7 +24,7 @@ const listedKeys = {
   'keyM': { kGroup: 'key3', Name: 'Uréteres', nodeName: 'Ureteres' },
   'keyN': { kGroup: 'key3', Name: 'Vejiga', nodeName: 'Vejiga' },
   'keyO': { kGroup: 'key3', Name: 'Uretra', nodeName: 'Uretra' },
-  'keyP': { kGroup: 'key4', Name: 'Aorta Abdominal', nodeName: 'Aorta' },
+  'keyP': { kGroup: 'key4', Name: 'Aorta Abdominal', nodeName: 'Arteria Aorta' },
   'keyQ1': { kGroup: 'key4', Name: 'A. Celíaca', nodeName: 'Arteria Celiaca' },
   'keyQ3': { kGroup: 'key4', Name: 'A. Ilíaca Externa', nodeName: 'Arteria Iliaca Externa' },
   'keyQ4': { kGroup: 'key4', Name: 'A. Ilíaca Interna', nodeName: 'Arteria Iliaca Interna' },
@@ -87,7 +87,7 @@ function success(api) {
           if (nodes.hasOwnProperty(prop)) {
             const name = nodes[prop].name.split('_')[0];  //Nombre base, sin nombre de textura (_...)
             const type = nodes[prop].type;
-
+            console.log(nodes[prop]);
             listedNodes[prop] = name;
             if (name === nodes[prop].name && type === "MatrixTransform") {
               idNodes[name] = nodes[prop].instanceID;
@@ -221,24 +221,6 @@ client.init(model, {
 
 // Funciones Propias
 //creadas para solo tener que llamarlas desde el .HTML
-//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
-function showAndHide(key) {
-  const node = listedKeys[key].nodeName;
-  const group = listedKeys[key].kGroup;
-  const checkBox = document.getElementById(key);
-  const checkGroup = document.getElementById(group);
-
-  if (checkBox.checked && checkGroup.checked) {
-    apiRef.show(idNodes[node]);
-    if (key === "keyP") { displayArterias(true); }
-    if (key === "keyR") { displayVenas(true); }
-  } else {
-    apiRef.hide(idNodes[node]);
-    if (key === "keyP") { displayArterias(false); }
-    if (key === "keyR") { displayVenas(false); }
-  }
-}
-
 //Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga pestaña "Exploración"
 let showToolTip=false;
 function toogleToolTips(){
@@ -262,14 +244,31 @@ if (showToolTip){
 showToolTip=!showToolTip
 }
 
+//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
+function showAndHide(key) {
+  const node = listedKeys[key].nodeName;
+  const group = listedKeys[key].kGroup;
+  const checkBox = document.getElementById(key);
+  const checkGroup = document.getElementById(group);
+
+  if (checkBox.checked == true && checkGroup.checked == true) {
+    apiRef.show(idNodes[node]);
+    if (key == "keyP") {displayArterias(true)};
+    if (key == "keyR") {displayVenas(true)};
+  } else {
+    apiRef.hide(idNodes[node]);
+    if (key === "keyP") { displayArterias(false); }
+    if (key === "keyR") { displayVenas(false); }
+  }
+}
 
 // Muestra nombres de arterias/venas en la "caja"
 function displayArterias(show) {
-  const keys = ["keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8"];
-  for (const key of keys) {
-    const node = listedKeys[key].nodeName;
-    if (show) { apiRef.show(idNodes[node]); }
-    else { apiRef.hide(idNodes[node]); }
+  const keys = [ "keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8" ];
+  for (key of keys) {
+    const node = listedKeys[key].nodeName
+    if (show) { apiRef.show(idNodes[node]) }
+    else      { apiRef.hide(idNodes[node]) }
   }
 }
 
@@ -328,4 +327,27 @@ function showGroup(groupId) {
     }
   }
 }
+
+
+  // //Código para mostrar el nombre de un órgano cuando se clica en él
+  // api.addEventListener('click', function(info) {
+  //   if (info.instanceID === null) {
+  //     document.getElementById('labelPick').innerHTML = 'clic en un órgano...';
+  //     document.getElementById('labelNote').innerHTML = '';
+  //   }
+  //   else {
+  //     const node = listedNodes[info.instanceID];
+  //     for (kBox in listedKeys) {
+  //       if (listedKeys[kBox].nodeName == node) {
+  //         Name = listedKeys[kBox].Name;
+  //         Note = listedKeys[kBox].Note;  // Esto es para poner las notas a un estilo propio en lugar de usar Sketchfab
+  //         document.getElementById('labelPick').innerHTML = Name;
+  //         if (Note != '') { document.getElementById('labelNote').innerHTML = '<hr>' + Note; } 
+  //         else            { document.getElementById('labelNote').innerHTML = ''; }
+  //       }
+  //     }
+  //   }
+  // },
+  // { pick: 'slow' });
+
 //FIN Sketchfab
