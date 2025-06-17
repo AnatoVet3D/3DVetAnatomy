@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarso Cánido</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame"
+    sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+
+    <div class="img-container1"> <!-- Si logo encima de letras -->
+      <img src="../assets/img/boton-vet-ucm.png">
+    </div>
+
+    <br><button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label>
+    <button class="showButton" id="keyA" onclick="showAndHide('Cubito y Radio', 'keyA')">Tibia-Peroné</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyH" onclick="showAndHide('Astragalo', 'keyH')">Astrágalo</button>
+    <button class="showButton" id="keyK" onclick="showAndHide('Calcaneo', 'keyK')">Calcáneo</button>
+    <button class="showButton" id="keyI" onclick="showAndHide('Hueso central (Navicular)', 'keyI')">Hueso Central </br>(Navicular)</button>
+    <button class="showButton" id="keyG" onclick="showAndHide('Hueso Tarsiano I (Cuneiforme medial)', 'keyG')">Hueso Tarsiano I </br> (Cuneiforme medial)</button>
+    <button class="showButton" id="keyC" onclick="showAndHide('Hueso Tarsiano II (Cuneiforme intermedio)', 'keyC')">Hueso Tarsiano II </br> (Cuneiforme intermedio)</button>
+    <button class="showButton" id="keyD" onclick="showAndHide('Hueso Tarsiano III (Cuneiforme Lateral)', 'keyD')">Hueso Tarsiano III </br> (Cuneiforme Lateral)</button>
+    <button class="showButton" id="keyJ" onclick="showAndHide('Hueso Tarsiano IV (Cuboides)', 'keyJ')">Hueso Tarsiano IV </br>(cuboides)</button>
+    <button class="showButton" id="keyE" onclick="showAndHide('Metatarsiano II', 'keyE')">Metatarsiano II</button>
+    <button class="showButton" id="keyB" onclick="showAndHide('Metatarsiano III', 'keyB')">Metatarsiano III</button>
+    <button class="showButton" id="keyF" onclick="showAndHide('Metatarsiano IV', 'keyF')">Metatarsiano IV</button>
+    <button class="showButton" id="keyL" onclick="showAndHide('Metatarsiano V', 'keyL')">Metatarsiano V</button>
+  </div>
+
+  <div class="img-container2"> <!-- logo esquina -->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <div class="fill">
+    <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
+      <img src="../assets/img/CreativeCommons.png">
+    </div>
+  </div>
+  
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
+
