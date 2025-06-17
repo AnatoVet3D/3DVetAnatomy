@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Para modificar posición y tamaño boton veterinaria UCM */
+.img-container1 {
+  width: 180px; 
+  right: 0px;
+}
+
+/* Para modificar posición y tamaño Escudo UCM */
+.img-container2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 122px;
+}
+
+/* Para modificar posición y tamaño Creative Commons*/
+.img-container3 {
+  position: absolute;
+  bottom: 12px;
+  right: 22px;
+  width: 122px;
+}
+
+/*Tapete botones Sketchfab*/
+.fill{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  height: 50px;
+  width: 200px;
+}
+
+/* Para elegir opacidad de las imagenes de los logos */
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+
+/*Estilo columna nombres, si separamoss símbolos de nombres estructuras*/
+.column-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-buttons button {
+  min-width: 180px;
+}
+/*Estilo columna nombres -  FIN*/
+
+/* Button style, Para cambiar el estilo de los botones */
+.buttons {
+  margin: 35px 5px;
+  right: 0;
+  top: 44px;
+  z-index: 1;
+  position: absolute;
+}
+
+button {
+  width: 130px;
+  height: 50px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  opacity: 0.8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  margin-top: 2px;
+}
+
+/*Estilo símbolos*/
+.material-symbols-outlined{
+  font-size: 35px;
+  width: 32%;
+  height: 50px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 2px;
+  background: #888888;
+}
+
+/* Para poder elegir el color del boton cuando se enciende */
+.showButton {
+  background: #1caad9;
+}
+
+/* Para poder elegir el color del boton cuando se apaga */
+.hideButton {
+  background: #888888;
+}
+
+/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  font-weight: bold;
+}
+
+
