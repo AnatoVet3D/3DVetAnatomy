@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Para modificar posición y tamaño boton veterinaria UCM */
+.img-container1 {
+  width: 160px;
+
+}
+
+/* Para modificar posición y tamaño Escudo UCM */
+.img-container2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 122px;
+}
+
+/* Para modificar posición y tamaño Creative Commons*/
+.img-container3 {
+  position: absolute;
+  bottom: 12px;
+  right: 22px;
+  width: 122px;
+}
+
+/*Tapete botones Sketchfab*/
+.fill{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  height: 50px;
+  width: 200px;
+}
+
+/* Para elegir opacidad de las imagenes de los logos */
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+/* Button style, Para cambiar el estilo de los botones */
+.buttons {
+  margin: 35px 5px;
+  right: 0;
+  top: 44px;
+  z-index: 1;
+  position: absolute;
+}
+
+button {
+  width: 160px;
+  height: auto;
+  min-height: 50px;
+  padding:6px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  opacity: 0.8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Para poder elegir el color del boton cuando se enciende */
+.showButton {
+  background: #1caad9;
+}
+
+.showKey{
+  background: #6fc24e;
+
+}
+/* Para poder elegir el color del boton cuando se apaga */
+.hideButton {
+  background: #888888;
+}
+
+/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  font-weight: bold;
+}
+
+#key1{
+  margin-bottom: 6px;
+}

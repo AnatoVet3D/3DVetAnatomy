@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EP Cánido</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame"
+    sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+
+    <div class="img-container1"> <!-- Si logo encima de letras -->
+      <img src="../assets/img/boton-vet-ucm.png">
+    </div>
+
+    <button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label>
+    
+    <button class="showButton" id="keyA" onclick="showAndHide('Segmentation_rodilla_tarso', 'keyA')">Fémur</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyD" onclick="showAndHide('Rotula', 'keyD')">Rótula</button>
+    <button class="showButton" id="keyE" onclick="showAndHideGroup('_mtl152503_0', 'keyE')">Fabelas</button>
+    <button class="showButton" id="keyB" onclick="showAndHideGroup('_mtl398147_0', 'keyB')">Meniscos</button>
+    <button class="showButton" id="keyH" onclick="showAndHide('Tibia y perone', 'keyH')">Tibia-Peroné</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyG" onclick="showAndHide('Popliteo', 'keyG')">Sesamoideo poplíteo</button>
+    <button class="showButton" id="keyI" onclick="showAndHide('Astragalo', 'keyI')">Astrágalo</button>
+    <button class="showButton" id="keyJ" onclick="showAndHide('Calcaneo', 'keyJ')">Calcáneo</button>
+    <button class="showButton" id="keyK" onclick="showAndHide('Hueso Central (Navicular)', 'keyK')">Hueso Central </br>(Navicular)</button>
+    <button class="showButton" id="keyL" onclick="showAndHide('Hueso Tarsiano I (Cuneiforme medial)', 'keyL')">Hueso Tarsiano I </br> (Cuneiforme medial)</button>
+    <button class="showButton" id="keyM" onclick="showAndHide('Hueso Tarsiano II (Cuneiforme intermedio)', 'keyM')">Hueso Tarsiano II </br> (Cuneiforme intermedio)</button>
+    <button class="showButton" id="keyN" onclick="showAndHide('Hueso Tarsiano III (Cuneiforme Lateral)', 'keyN')">Hueso Tarsiano III </br> (Cuneiforme Lateral)</button>
+    <button class="showButton" id="keyO" onclick="showAndHide('Hueso Tarsiano IV (Cuboides)', 'keyO')">Hueso Tarsiano IV </br>(cuboides)</button>
+    <button class="showButton" id="keyP" onclick="showAndHide('Metatarsiano II', 'keyP');showAndHide('Metatarsiano III', 'keyP');showAndHide('Metatarsiano III.001', 'keyP');showAndHide('Metatarso IV', 'keyP')">Metatarsianos</button>
+    <button class="showButton" id="keyT" onclick="showAndHideGroup('_mtl621425_0', 'keyT')">Sesamoideos dorsales</button>
+    <button class="showButton" id="keyX" onclick="showAndHideGroup('_mtl622365_0', 'keyX')">Sesamoideos plantares</button>
+    <button class="showButton" id="keyAB" onclick="showAndHideGroup('_mtl604139_0', 'keyAB')">Falanges distales</button>
+    <button class="showButton" id="keyAF" onclick="showAndHideGroup('_mtl587225_0', 'keyAF')">Falanges medias</button>
+    <button class="showButton" id="keyAM" onclick="showAndHideGroup('_mtl630991_0', 'keyAM' )">Falanges proximales</button>
+    <button class="showButton" id="keyAO" onclick="showAndHide('Dedo I', 'keyAO')">Dedo I</button>
+
+  </div>
+
+  <div class="img-container2"> <!-- logo esquina -->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <div class="fill">
+    <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
+      <img src="../assets/img/CreativeCommons.png">
+    </div>
+  </div>
+  
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
+

@@ -1,4 +1,4 @@
-const model = '76f7f9849111496d8adddec6698617a7'; // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
+const model = '0bf24253bf6e4ff39932caf47a8cc0fc'; // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
 
 const filteredNodes = {}; // Objeto para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
 let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
@@ -33,7 +33,7 @@ error = function () {
         };
 
         //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
-        for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+        for (let i = 0; i < 4; i++) { // R: Según el nº de anotaciones modificar el último número
           apiRef.hideAnnotation(i, function (err, index) {
             if (!err) {
               //window.console.log('Hiding annotation', index + 1);
@@ -76,12 +76,12 @@ function showAndHide(nodeName, buttonId) {
 let showToolTip = false;
 function toogleToolTips() {
   if (showToolTip) {
-    for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 4; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.hideAnnotation(i, function (err, index) {
       });
     }
   } else {
-    for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 4; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.showAnnotation(i, function (err, index) {
       });
     }

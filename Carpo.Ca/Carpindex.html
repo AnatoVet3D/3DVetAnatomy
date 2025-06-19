@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carpo Cánido</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame"
+    sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+
+    <div class="img-container1"> <!-- Si logo encima de letras -->
+      <img src="../assets/img/boton-vet-ucm.png">
+    </div>
+
+    <button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label>
+    <button class="showButton" id="keyA" onclick="showAndHide('Radio', 'keyA')">Radio</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyB" onclick="showAndHide('Cubito', 'keyB')">Cúbito</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyC" onclick="showAndHide('Hueso Carpo1', 'keyC')">Hueso intermediorradial</br>(H. escafolunar)</button>
+    <button class="showButton" id="keyD" onclick="showAndHide('Hueso Carpo2', 'keyD')">Hueso carpocubital</br> (H. Piramidal)</button>
+    <button class="showButton" id="keyE" onclick="showAndHide('Hueso Carpo3', 'keyE')">Hueso carpiano I</br> (Hueso trapecio)</button>
+    <button class="showButton" id="keyF" onclick="showAndHide('Hueso Carpo4', 'keyF')">Hueso carpiano II</br> (Hueso trapezoide)</button>
+    <button class="showButton" id="keyG" onclick="showAndHide('Hueso Carpo5', 'keyG')">Hueso carpiano III</br>  (Hueso grande del carpo)</button>
+    <button class="showButton" id="keyH" onclick="showAndHide('Hueso Carpo6', 'keyH')">Hueso carpiano IV</br> (H. Ganchoso)</button>
+    <button class="showButton" id="keyAI" onclick="showAndHide('Hueso Carpo8', 'keyAI')">Hueso accesorio</br>del carpo</br>(Hueso pisiforme)</button>
+    <button class="showButton" id="keyI" onclick="showAndHide('Nusep_metatarso', 'keyI')">Sesamoideo</br>M. abductor largo (I dedo)</button>
+    <button class="showButton" id="keyT" onclick="showAndHide('Falange Proximal Dedo I', 'keyT');showAndHide('Metatarsiano II', 'keyT');showAndHide('Metatarsiano III', 'keyT');showAndHide('Metatarsiano IV', 'keyT');showAndHide('Metatarsiano V', 'keyT')">Metacarpianos</button>
+    <button class="showButton" id="keyN" onclick="showAndHide('Sesamoideo dorsal dedo III', 'keyN');showAndHide('Sesamoideo dorsal dedo IV', 'keyN')">Sesamoideos dorsales</button>
+    <button class="showButton" id="keyP" onclick="showAndHide('Sesamoideos Proximales Dedo II', 'keyP');showAndHide('Sesamoideos Proximales dedo III', 'keyP');showAndHide('Sesamoideos Proximales dedo IV', 'keyP');showAndHide('Sesamoideos Proximales dedo V', 'keyP')">Sesamoideos palmares</button>
+    <button class="showButton" id="keyY" onclick="showAndHide('Falange Media Dedo I', 'keyY');showAndHide('Falange Proximal Dedo II', 'keyY');showAndHide('Falange Proximal Dedo III', 'keyY');showAndHide('Falange Proximal Dedo IV', 'keyY');showAndHide('Falange Proximal Dedo V', 'keyY')">Falanges proximales</button>
+    <button class="showButton" id="keyZ" onclick="showAndHide('Falange Media Dedo II', 'keyZ');showAndHide('Falange Media Dedo III', 'keyZ');showAndHide('Falange Media Dedo IV', 'keyZ');showAndHide('Falange Media Dedo V', 'keyZ')">Falanges medias</button>
+    <button class="showButton" id="keyAD" onclick="showAndHide('Falange Distal Dedo I', 'keyAD');showAndHide('Falange Distal Dedo II', 'keyAD');showAndHide('Falange Distal Dedo III', 'keyAD');showAndHide('Falange Distal Dedo IV', 'keyAD');showAndHide('Falange Distal Dedo V', 'keyAD')">Falanges distales</button>
+
+  </div>
+
+  <div class="img-container2"> <!-- logo esquina -->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <div class="fill">
+    <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
+      <img src="../assets/img/CreativeCommons.png">
+    </div>
+  </div>
+  
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
+
