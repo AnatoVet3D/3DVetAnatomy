@@ -37,7 +37,7 @@ error = function () {
         };
 
         //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
-        for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+        for (let i = 0; i < 14; i++) { // R: Según el nº de anotaciones modificar el último número
           apiRef.hideAnnotation(i, function (err, index) {
             if (!err) {
               //window.console.log('Hiding annotation', index + 1);
@@ -84,12 +84,12 @@ function showAndHide(nodeName, buttonId = null) {
 let showToolTip = false;
 function toogleToolTips() {
   if (showToolTip) {
-    for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 14; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.hideAnnotation(i, function (err, index) {
       });
     }
   } else {
-    for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 14; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.showAnnotation(i, function (err, index) {
       });
     }
