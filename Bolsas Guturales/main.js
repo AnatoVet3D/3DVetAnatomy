@@ -10,6 +10,12 @@ client = new Sketchfab(iframe);
 
 const nodeNames = []; // Array para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
 
+// Lista de nodos que quieres ocultar al cargar
+const nodosInicialmenteOcultos = [
+  "Imagen CorteParasagital",
+  "Imagen CorteCraneal",
+];
+
 
 error = function () {
   console.error('Sketchfab API Error!');
@@ -35,7 +41,13 @@ success = function (api) {
           };
         };
       };
-
+      // Ocultar nodos especificados al inicio
+      nodosInicialmenteOcultos.forEach((nombreNodo) => {
+        if (filteredNodes[nombreNodo]) {
+          filteredNodes[nombreNodo].show = false;
+          apiRef.hide(filteredNodes[nombreNodo].instanceId);
+        }
+      });
       //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
       for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
         apiRef.hideAnnotation(i, function (err, index) {
@@ -97,7 +109,7 @@ client.init(model, {
 //Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(nodeName, buttonId = null) {
   const btn = document.getElementById(buttonId);
-  console.log(filteredNodes); //R: esto sólo se descomenta para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
+  //console.log(filteredNodes); //R: esto sólo se descomenta para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
   filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
   if (filteredNodes[nodeName].show) {
     if (buttonId){
@@ -147,6 +159,32 @@ function showAndHideGroup(code, buttonId) {
       showAndHide(node, buttonId);
     } else {
       showAndHide(node);
+    }
+  });
+}
+
+//AUN HAY QUE AJUSTARLO  -- NO FUNCIONA
+function showOnlyNodes(nodeNamesToShow) {
+  for (const name in filteredNodes) {
+    if (!filteredNodes.hasOwnProperty(name)) continue;
+
+    const node = filteredNodes[name];
+    if (!node || typeof node.instanceId === 'undefined') continue;
+
+    const shouldShow = nodeNamesToShow.includes(name);
+    node.show = shouldShow;
+
+    if (shouldShow) {
+      apiRef.show(node.instanceId);
+    } else {
+      apiRef.hide(node.instanceId);
+    }
+  }
+
+  // Mostrar los nodos que sí queremos aunque aún no estén cargados del todo
+  nodeNamesToShow.forEach((nodeName) => {
+    if (!filteredNodes[nodeName]) {
+      console.warn(`Nodo no encontrado aún: ${nodeName}`);
     }
   });
 }
