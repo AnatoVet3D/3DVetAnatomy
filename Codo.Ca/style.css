@@ -78,7 +78,7 @@ button {
 
 .showKey{
   background: #6fc24e;
-
+  width: 32%;
 }
 /* Para poder elegir el color del boton cuando se apaga */
 .hideButton {

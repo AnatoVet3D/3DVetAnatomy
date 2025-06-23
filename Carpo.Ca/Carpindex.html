@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Carpo canino</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,8 +19,9 @@
     <div class="img-container1"> <!-- Si logo encima de letras -->
       <img src="../assets/img/boton-vet-ucm.png">
     </div>
+    
+    <button class="showKey" id="key1" onclick="toogleToolTips()" checked><span class="material-symbols-outlined">edit_square</span></button>
 
-    <button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label>
     <button class="showButton" id="keyA" onclick="showAndHide('Radio', 'keyA')">Radio</button> <!-- Nombre del botón -->
     <button class="showButton" id="keyB" onclick="showAndHide('Cubito', 'keyB')">Cúbito</button> <!-- Nombre del botón -->
     <button class="showButton" id="keyC" onclick="showAndHide('Hueso Carpo1', 'keyC')">Hueso intermediorradial</br>(H. escafolunar)</button>
