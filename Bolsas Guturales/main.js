@@ -116,6 +116,47 @@ success = function (api) {
     //       else          { XYZi = 3 };
     //       api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
     // });
+
+    // Puntos de cámara para keyP y keyQ
+    const camPos_P = [-0.007580537255248081, -0.9563176979727426, 0.22682669953700535];  // Vista lateral izquierda, por ejemplo
+    const camTarget_P = [0.014990176352229136, 0.05734959364337239, 0.20123776708097257];
+
+    const camPos_Q = [1.1125, -0.0995, 0.2066];  // Vista lateral derecha, por ejemplo
+    const camTarget_Q = [-0.0964, 0.0682, -0.0081];
+
+    // Solo mover cámara a un punto al hacer clic
+    document.getElementById('keyP').addEventListener('click', function () {
+      apiRef.setCameraLookAt(camPos_P, camTarget_P, 2);  // último parámetro es duración (segundos)
+    });
+
+    document.getElementById('keyQ').addEventListener('click', function () {
+      apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
+    });
+
+  //   document.getElementById('keyP').addEventListener('click', function () {
+  //     // Mover cámara
+  //     apiRef.setCameraLookAt(camPos_P, camTarget_P, 2);
+
+  //     // Mostrar solo modelos relacionados con la vista Parasagital
+  //     mostrarSoloEstos([
+  //       'Imagen CorteParasagital',
+  //       'Hueso001',
+  //       'Hueso002'
+  //     ]);
+  //   });
+
+  // document.getElementById('keyQ').addEventListener('click', function () {
+  //   // Mover cámara
+  //   apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
+
+  //   // Mostrar solo modelos relacionados con la vista Craneal
+  //   mostrarSoloEstos([
+  //     'Imagen CorteCraneal',
+  //     'Hueso001',
+  //     'Hueso003'
+  //   ]);
+  // });
+
 };
 
 client.init(model, {
