@@ -62,100 +62,21 @@ success = function (api) {
     );
   });
 
-    // function getAzimuth() {
-    //   api.getCameraLookAt(function (err, camera) {
-    //         var Cx = camera.position[0];
-    //         var Cy = camera.position[1];
-    //         var Tx = camera.target[0];
-    //         var Ty = camera.target[1];
-    //         azimuth = Math.atan2(Cy-Ty, Cx-Tx);
-    //   });
-    // }
+  // Puntos de cámara para keyP y keyQ
+  const camPos_P = [-0.007580537255248081, -0.9563176979727426, 0.22682669953700535];  // Vista lateral izquierda, por ejemplo
+  const camTarget_P = [0.014990176352229136, 0.05734959364337239, 0.20123776708097257];
 
-    // //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
-    // const XYZa = [  
-    //   [-0.0573, -1.0648, 0.0359],
-    //   [-1.0623, 0.1739, 0.0266],
-    //   [0.0597, 0.9722, 0.1828],
-    //   [1.1125, -0.0995, 0.2066]
-    // ];
+  const camPos_Q = [1.1125, -0.0995, 0.2066];  // Vista lateral derecha, por ejemplo
+  const camTarget_Q = [-0.0964, 0.0682, -0.0081];
 
-    // //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
-    // const XYZb = [
-    //   [0.0472, 0.0512, 0.0183],
-    //   [0.0400, -0.0297, 0.0207],
-    //   [-0.0320, -0.0237, 0.0160],
-    //   [-0.0964, 0.0682, -0.0081]
-    // ];
-    
-    // //Al abrirse el modelo, pone la vista estandar del lado izquierdo
-    // api.setCameraLookAt(XYZa[3], XYZb[3], 2);
-    
-    // //Hace girar cámara 90º en sentido horario, mirando hacia el lado izquierdo, posterior, derecho o frontal
-    // //Primero comprueba en qué sector se encuentra, luego gira al siguiente
-    // keyP.addEventListener('click', function () {
-    //   getAzimuth();
+  // Solo mover cámara a un punto al hacer clic
+  document.getElementById('keyP').addEventListener('click', function () {
+    apiRef.setCameraLookAt(camPos_P, camTarget_P, 2);  // último parámetro es duración (segundos)
+  });
 
-    //   //convierte el azimuth de la cámara en un índice de vista: 0=posterior, 1=izquierda, 2=anterior, 3=derecha
-    //       let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
-    //       if (XYZi == -1) {XYZi = 3}
-
-    //       if (XYZi < 3) { XYZi ++ }
-    //       else          { XYZi = 0 };
-    //       api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
-    // });
-
-    // //Hace girar la cámara 90º en sentido antihorario, mirando hacia el lado izquierdo, frontal, derecho o posterior
-    // //Primero comprueba en qué sector se encuentra, luego gira al siguiente sector
-    // keyQ.addEventListener('click', function () {
-    //   getAzimuth();
-    //       let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
-    //       if (XYZi == -1) {XYZi = 3}
-
-    //       if (XYZi > 0) { XYZi -- }
-    //       else          { XYZi = 3 };
-    //       api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
-    // });
-
-    // Puntos de cámara para keyP y keyQ
-    const camPos_P = [-0.007580537255248081, -0.9563176979727426, 0.22682669953700535];  // Vista lateral izquierda, por ejemplo
-    const camTarget_P = [0.014990176352229136, 0.05734959364337239, 0.20123776708097257];
-
-    const camPos_Q = [1.1125, -0.0995, 0.2066];  // Vista lateral derecha, por ejemplo
-    const camTarget_Q = [-0.0964, 0.0682, -0.0081];
-
-    // Solo mover cámara a un punto al hacer clic
-    document.getElementById('keyP').addEventListener('click', function () {
-      apiRef.setCameraLookAt(camPos_P, camTarget_P, 2);  // último parámetro es duración (segundos)
-    });
-
-    document.getElementById('keyQ').addEventListener('click', function () {
-      apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
-    });
-
-  //   document.getElementById('keyP').addEventListener('click', function () {
-  //     // Mover cámara
-  //     apiRef.setCameraLookAt(camPos_P, camTarget_P, 2);
-
-  //     // Mostrar solo modelos relacionados con la vista Parasagital
-  //     mostrarSoloEstos([
-  //       'Imagen CorteParasagital',
-  //       'Hueso001',
-  //       'Hueso002'
-  //     ]);
-  //   });
-
-  // document.getElementById('keyQ').addEventListener('click', function () {
-  //   // Mover cámara
-  //   apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
-
-  //   // Mostrar solo modelos relacionados con la vista Craneal
-  //   mostrarSoloEstos([
-  //     'Imagen CorteCraneal',
-  //     'Hueso001',
-  //     'Hueso003'
-  //   ]);
-  // });
+  document.getElementById('keyQ').addEventListener('click', function () {
+    apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
+  });
 
 };
 
