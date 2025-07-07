@@ -62,7 +62,7 @@ client.init(model, {
 function showAndHide(nodeName, buttonId) {
   const btn = document.getElementById(buttonId);
   filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
-  console.log(filteredNodes); //R: esto sólo se descomenta, y se comenta lo de arriba para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
+  //console.log(filteredNodes); //R: esto sólo se descomenta, y se comenta lo de arriba para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
   if (filteredNodes[nodeName].show) {
     btn.classList.replace("hideButton", "showButton");
     apiRef.show(filteredNodes[nodeName].instanceId)
