@@ -26,6 +26,10 @@
     <button class="showButton" id="keyK" onclick="showAndHide('Sustancia_Gris', 'keyK')">Sustancia gris</button>
     <button class="showButton" id="keyI" onclick="showAndHide('Sustancia_blanca', 'keyI')">Sustancia blanca</button>
     <button class="showButton" id="keyG" onclick="showAndHide('Tumor', 'keyG')">Tumor</button>
+    <label for="opacityTumor" style="color:white;">Opacidad Tumor</label>
+    <input type="range" id="opacityTumor" min="0" max="1" step="0.01" value="1"
+          onchange="setOpacityGroup('Tumor', this.value)">
+
 
   </div>
 
@@ -43,4 +47,3 @@
   <script src="main.js"></script>
 </body>
 </html>
-

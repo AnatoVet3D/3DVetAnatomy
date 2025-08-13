@@ -151,7 +151,7 @@ function findNodeGroups(code) {
   return nodeNames.filter((nodeName)=> nodeName.includes(code));
 }
 
-// Para mostrar/ocultar grupos de huesos por mismo código de color (el "mtl")
+// Para mostrar/ocultar grupos de objetos por mismo código de color (el "mtl")
 function showAndHideGroup(code, buttonId) {
   const nodeNames = findNodeGroups(code);
   nodeNames.forEach((node, i) => {
