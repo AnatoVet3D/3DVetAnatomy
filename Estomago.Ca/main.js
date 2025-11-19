@@ -1,33 +1,73 @@
 var model = 'e4fba508c8e04a2d860d145abe07bee9'; // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
 
 // Buttons
-buttonA = document.getElementById( 'keyA' );
-buttonB = document.getElementById( 'keyB' );
-buttonC = document.getElementById( 'keyC' );
-buttonD = document.getElementById( 'keyD' );
-buttonE1 = document.getElementById( 'keyE1' );
-buttonE2 = document.getElementById( 'keyE2' );
-buttonF1 = document.getElementById( 'keyF1' );
-buttonF2 = document.getElementById( 'keyF2' );
-buttonG = document.getElementById( 'keyG' );
-buttonI = document.getElementById( 'keyI' );
-buttonH = document.getElementById( 'keyH' );
+const buttonA  = document.getElementById('keyA');
+const buttonB  = document.getElementById('keyB');
+const buttonC  = document.getElementById('keyC');
+const buttonD  = document.getElementById('keyD');
+const buttonE1 = document.getElementById('keyE1');
+const buttonE2 = document.getElementById('keyE2');
+const buttonF1 = document.getElementById('keyF1');
+const buttonF2 = document.getElementById('keyF2');
+const buttonG  = document.getElementById('keyG');
+const buttonI  = document.getElementById('keyI');
+const buttonH  = document.getElementById('keyH');
+//AutoPlay recorrido endoscopia
+document.getElementById("autoEndo").addEventListener("click", () => {
+  toggleAutoEndoscopy("autoEndo");
+});
 
-// Variables
+// Slider funcional
+document.getElementById("speedSlider").addEventListener("input", function () {
+  const min = parseInt(this.min);
+  const max = parseInt(this.max);
+  const val = parseInt(this.value);
+
+  // Inversión: si el slider está a la derecha, queremos velocidad alta (steps bajos)
+  splineSteps = max - (val - min);
+
+  //console.log("Nueva velocidad spline:", splineSteps);
+});
+
+// Variables generales
 var directory = "../assets/img/endoscopia/estomago.Ca/"; // directorio con las imágenes
-var leftSide = "visible";  // on/off para el botón que apaga la mitad izquierda del intestino
-var rightSide = "visible"; // on/off para el botón que apaga la mitad derecha del intestino
-var pictures = "off";      // on/off para el botón que enciende las zonas sensibles para las imágenes de la endoscópia
-var facing = "caudal";     // dirección caudal/rostral de la vista desplazandose dentro del intestino
-var infoOnOff = "off";     // on/off del cuadro de instrucciones
-var inout = "out";         // in/out para el botón que desplaza hacia el interior o exterior del intestino
-var textlabel0 = "";       // registro con la etiqueta de la parte de intestino seleccionada
-var filename0 = "";        // registro con el nombre del fichero de la imagen de endoscopia seleccionada
-const listedNodes = {};    // registro con los índices de las zonas sensibles Intestino01 a Intestino20
-const listedTargets = {};  // registro con los índices de las zonas sensibles Target1 a Target8
-let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
+var leftSide  = "visible";   // on/off para el botón que apaga la mitad izquierda del intestino
+var rightSide = "visible";   // on/off para el botón que apaga la mitad derecha del intestino
+var pictures  = "off";       // on/off para el botón que enciende las zonas sensibles para las imágenes
+var facing    = "caudal";    // dirección caudal/rostral de la vista dentro del intestino
+var infoOnOff = "off";       // on/off del cuadro de instrucciones
+var inout     = "out";       // in/out para el botón que desplaza dentro/fuera
+let lastInsideIndex = null;
 
-// Correspondencias entre las zonas sensibles y las etiquetas o imágenes que aparecen al clicar
+
+var textlabel0 = "";         // última etiqueta mostrada
+var filename0  = "";         // último fichero de imagen mostrado
+
+/* AUTOPLAY */
+let autoRunning = false;
+let autoPlay = null;
+let lastCameraPos = null;   // posición real durante el spline
+
+
+/* Velocidad del autoplay */
+let splineSteps = 200;      // igual que en colon
+let speedSlider = null;
+
+// Para mapear zonas sensibles a nombres o imágenes
+const listedNodes   = {};    // índice -> nombre anatómico (IntestinoXX, FlechasXX)
+const listedTargets = {};    // índice -> filename de imagen de endoscopia
+
+let apiRef;                  // referencia global a la API
+
+// Nodos principales (mitades, flechas, targets)
+let node_IntestinoL = null;
+let node_IntestinoR = null;
+let node_TargetsL   = null;
+let node_TargetsR   = null;
+let node_FlechasL   = null;
+let node_FlechasR   = null;
+
+// Correspondencias entre las zonas sensibles y las etiquetas o imágenes
 const leyenda = {};
 leyenda['Intestino01'] = { name: 'Esófago' };
 leyenda['Intestino02'] = { name: 'Cardias' };
@@ -49,14 +89,14 @@ leyenda['Intestino17'] = { name: 'Curvatura Mayor' };
 leyenda['Intestino18'] = { name: 'Incisura Cardial' };
 leyenda['Intestino19'] = { name: 'Incisura Angular' };
 leyenda['Intestino20'] = { name: 'Curvatura Menor' };
-leyenda['Target1'] = { filename: 'endoscopia1.jpg' };
-leyenda['Target2'] = { filename: 'endoscopia2.jpg' };
-leyenda['Target3'] = { filename: 'endoscopia3.jpg' };
-leyenda['Target4'] = { filename: 'endoscopia4.jpg' };
-leyenda['Target5'] = { filename: 'endoscopia5.jpg' };
-leyenda['Target6'] = { filename: 'endoscopia6.jpg' };
-leyenda['Target7'] = { filename: 'endoscopia7.jpg' };
-leyenda['Target8'] = { filename: 'endoscopia8.jpg' };
+leyenda['Target1']     = { filename: 'endoscopia1.jpg' };
+leyenda['Target2']     = { filename: 'endoscopia2.jpg' };
+leyenda['Target3']     = { filename: 'endoscopia3.jpg' };
+leyenda['Target4']     = { filename: 'endoscopia4.jpg' };
+leyenda['Target5']     = { filename: 'endoscopia5.jpg' };
+leyenda['Target6']     = { filename: 'endoscopia6.jpg' };
+leyenda['Target7']     = { filename: 'endoscopia7.jpg' };
+leyenda['Target8']     = { filename: 'endoscopia8.jpg' };
 
 // registro con las coordenadas de los puntos del recorrido dentro del intestino
 var XYZ = [];
@@ -95,242 +135,91 @@ XYZ.push([300.61, -327.06, -54.26]);
 XYZ.push([329.00, -286.46, -50.81]);
 XYZ.push([340.20, -270.02, -49.55]);
 
-var i = 1;
+// Variables para recorrido endoscopia
+var i = 0;
 var N = XYZ.length;
+const UNIT_FIX = 1;   // Constante de correccion de unidades para curva endoscopia
 
-//INICIO Sketchfab
-//Asi se llama a la versión de api que esté actualmente
+
+// ============================
+//   INICIALIZACIÓN SKETCHFAB
+// ============================
 const iframe = document.getElementById('api-frame');
 const client = new Sketchfab(iframe);
 
-error = function () {
-  console.error( 'Sketchfab API Error!' );
-},
+function error() {
+  console.error('Sketchfab API Error!');
+}
 
-success = function( api ) {
-  //apiRef = api; //Aquí ya estamos nombrando a la variable creada por nosotros
-                  //para poder usarla fuera de lo de Sketchfab
-  api.start();
-  // Wait for viewer to be ready
-  api.addEventListener( 'viewerready', function() {
-    // Get the object nodes
-    api.getNodeMap( function ( err, nodes ) {
-      if ( !err ) {
+function success(api) {
+  apiRef = api;
+  apiRef.start();
 
-        var mySplit, myWord;
+  apiRef.addEventListener('viewerready', function () {
 
-        for ( var prop in nodes ) {
-          if ( nodes.hasOwnProperty( prop ) ) {
-            //alert(nodes[prop].instanceID+" : "+nodes[prop].name+" : "+nodes[prop].nodeMask+" : "+nodes[prop].type+" : "+nodes[prop].localMatrix+" ; "+nodes[prop].worldMatrix);
+    // Obtener nodos
+    apiRef.getNodeMap(function (err, nodes) {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-            // asigna los índices de los objetos Sketchfab (Intestino, Target, Flechas), para los lados derecho e izquierdo
-            if (nodes[prop].instanceID > 2 && nodes[prop].type === "MatrixTransform") {
-              if      ( nodes[ prop ].name === "IntestinoL" ) { var node_IntestinoL  = nodes[prop].instanceID; }
-              else if ( nodes[ prop ].name === "IntestinoR" ) { var node_IntestinoR  = nodes[prop].instanceID; }
-              else if ( nodes[ prop ].name === "TargetsL" )   { var node_TargetsL  = nodes[prop].instanceID; }
-              else if ( nodes[ prop ].name === "TargetsR" )   { var node_TargetsR  = nodes[prop].instanceID; }
-              else if ( nodes[ prop ].name === "FlechasL" )   { var node_FlechasL  = nodes[prop].instanceID; }
-              else if ( nodes[ prop ].name === "FlechasR" )   { var node_FlechasR  = nodes[prop].instanceID; }
-            }
+      // Rellenar node_* y los mapas listedNodes/listedTargets
+      for (var prop in nodes) {
+        if (!nodes.hasOwnProperty(prop)) continue;
 
-            // asigna los índices de las zonas sensibles, en base a la segunda palabra resultante de separar el nombre del objeto Sketchfab según el caracter "_"
-            // por ejemplo, con "189 : IntestinoL_Intestino05_0", el objeto índice 189 se refiere a la zona sensible "Intestino05" (lado iquierdo)
-            if (nodes[prop].instanceID > 2 && nodes[prop].type !== "MatrixTransform") {
-              mySplit = nodes[prop].name.split("_");
-              if (mySplit.length >= 2) {
-                word1 = mySplit[0];
-                word2 = mySplit[1];
-                // rellena los registros listedNodes y listedTargets, dependiendo de si la zona sensible pertenece a "Intestino" y "Flechas", o "Targets"
-                if (word1 == "IntestinoL" || word1 == "IntestinoR" || word1 == "FlechasL" || word1 == "FlechasR") {
-                  listedNodes[nodes[prop].instanceID] = leyenda[word2].name;
-                }
-                if (word1 == "TargetsL" || word1 == "TargetsR") {
-                  listedTargets[nodes[prop].instanceID] = leyenda[word2].filename;
-                }
+        const node = nodes[prop];
+
+        // Nodos principales (mitades, targets, flechas)
+        if (node.instanceID > 2 && node.type === "MatrixTransform") {
+          if      (node.name === "IntestinoL") node_IntestinoL = node.instanceID;
+          else if (node.name === "IntestinoR") node_IntestinoR = node.instanceID;
+          else if (node.name === "TargetsL")   node_TargetsL   = node.instanceID;
+          else if (node.name === "TargetsR")   node_TargetsR   = node.instanceID;
+          else if (node.name === "FlechasL")   node_FlechasL   = node.instanceID;
+          else if (node.name === "FlechasR")   node_FlechasR   = node.instanceID;
+        }
+
+        // Zonas sensibles (IntestinoXX, FlechasXX, TargetsXX)
+        if (node.instanceID > 2 && node.type !== "MatrixTransform") {
+          const mySplit = node.name.split("_");
+          if (mySplit.length >= 2) {
+            const word1 = mySplit[0];
+            const word2 = mySplit[1];
+
+            // Intestino/Flechas → etiqueta de texto
+            if (word1 == "IntestinoL" || word1 == "IntestinoR" ||
+                word1 == "FlechasL"   || word1 == "FlechasR") {
+              if (leyenda[word2]) {
+                listedNodes[node.instanceID] = leyenda[word2].name;
               }
             }
 
-          }
-        }
-
-        // apaga/enciende el lado izquierdo de intestino, flechas y targets
-        if (node_IntestinoL && node_TargetsL && node_FlechasL) {buttonA.addEventListener( 'click', function() {switch(leftSide) {
-              case "visible": leftSide = "invisible"; buttonA.style.backgroundColor = "#888888"; api.hide(node_IntestinoL); api.hide(node_TargetsL); api.hide(node_FlechasL); break;
-              case "invisible": leftSide = "visible"; buttonA.style.backgroundColor = "#1caad9"; api.show(node_IntestinoL); if (pictures == "on") {api.show(node_TargetsL)}; api.show(node_FlechasL); break;
-        } }); }
-
-        // apaga/enciende el lado derecho de intestino, flechas y targets
-        if (node_IntestinoR && node_TargetsR && node_FlechasR) {buttonB.addEventListener( 'click', function() {switch(rightSide) {
-              case "visible": rightSide = "invisible"; buttonB.style.backgroundColor = "#888888"; api.hide(node_IntestinoR); api.hide(node_TargetsR); api.hide(node_FlechasR); break;
-              case "invisible": rightSide = "visible"; buttonB.style.backgroundColor = "#1caad9"; api.show(node_IntestinoR); if (pictures == "on") {api.show(node_TargetsR)}; api.show(node_FlechasR); break;
-        } }); }
-
-        // apaga/enciende las zonas sensibles de los targes
-        if (node_TargetsR && node_TargetsL) {
-          api.hide(node_TargetsR); api.hide(node_TargetsL);
-          buttonC.addEventListener( 'click', function() {switch(pictures) {
-              case "on": pictures = "off"; buttonC.style.backgroundColor = "#888888"; api.hide(node_TargetsR); api.hide(node_TargetsL); document.getElementById("image1").style.display = "none"; break;
-              case "off": pictures = "on"; buttonC.style.backgroundColor = "#1caad9"; if (leftSide == "visible") {api.show(node_TargetsR)}; if (rightSide == "visible") {api.show(node_TargetsL)}; break;
-          } });
-        }
-
-        // abre el cuadro con las instrucciones
-        buttonD.addEventListener( 'click', function() {
-          var filename = directory + "instrucciones.png";
-          if (filename != filename0) {
-            document.getElementById("label1").style.display = "none";
-            textlabel0 = "";
-            document.getElementById("image1").src = filename;
-            document.getElementById("image1").style.width = "700px";
-            document.getElementById("image1").style.display = "block";
-            filename0 = filename;
-          }
-          else {
-            document.getElementById("image1").style.display = "none";
-            filename0 = "";
-          }
-        });
-
-        // orienta la vista hacia el lado rostral
-        buttonE1.addEventListener( 'click', function() {
-          document.getElementById("keyE1").style.display = "none";
-          document.getElementById("keyE2").style.display = "inline";
-          facing = "rostral";
-          setCamera(i);
-        });
-
-        // orienta la vista hacia el lado caudal
-        buttonE2.addEventListener( 'click', function() {
-          document.getElementById("keyE1").style.display = "inline";
-          document.getElementById("keyE2").style.display = "none";
-          facing = "caudal";
-          setCamera(i);
-        });
-
-        // desplaza la vista hacia el interior del intestino
-        buttonF1.addEventListener( 'click', function() {
-          api.getCameraLookAt(function(err, camera) {
-            x1 = camera.position[0];
-            y1 = camera.position[1];
-            z1 = camera.position[2];
-            for (var j = 0; j < N; j++) {
-              x2 = XYZ[j][0];  y2 = XYZ[j][1];  z2 = XYZ[j][2];
-              dx = x2-x1;  dy = y2-y1;  dz = z2-z1;
-              D = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2) + Math.pow(dz,2));
-              if (j == 0) {jmin = j; Dmin = D;}
-              else { if (D < Dmin) {jmin = j; Dmin = D;} }
+            // Targets → imagen de endoscopia
+            if (word1 == "TargetsL" || word1 == "TargetsR") {
+              if (leyenda[word2]) {
+                listedTargets[node.instanceID] = leyenda[word2].filename;
+              }
             }
-            i = jmin;
-            buttonI.innerHTML = i;
-            setCamera(i);
-          });
-          document.getElementById("keyF1").style.display = "none";
-          document.getElementById("keyF2").style.display = "inline";
-          inout = "in";
-        });
-
-        // desplaza la vista hacia el exterior del intestino
-        buttonF2.addEventListener( 'click', function() {
-          api.getCameraLookAt(function(err, camera) {
-            x1 = camera.position[0];
-            y1 = camera.position[1];
-            z1 = camera.position[2];
-            api.setCameraLookAt([x1,y1,200], [x1,y1,z1], 2);
-          });
-          document.getElementById("keyF1").style.display = "inline";
-          document.getElementById("keyF2").style.display = "none";
-          inout = "out";
-        });
-
-        // desplaza la vista dentro del intestino hacia caudal
-        buttonG.addEventListener( 'click', function() {
-          if (i < N-1) { i++ }
-          buttonI.innerHTML = i;
-          setCamera(i);
-          document.getElementById("keyF1").style.display = "none";
-          document.getElementById("keyF2").style.display = "inline";
-          inout = "in";
-        });
-
-        // desplaza la vista dentro del intestino hacia rostral
-        buttonH.addEventListener( 'click', function() {
-          if (i > 1) { i-- }
-          buttonI.innerHTML = i;
-          setCamera(i);
-          document.getElementById("keyF1").style.display = "none";
-          document.getElementById("keyF2").style.display = "inline";
-          inout = "in";
-        });
-
-        // desplaza la vista dentro del intestino en función del índice en el registro "i"
-        function setCamera(i) {
-          var kr = 0.5;
-          x1 = XYZ[i][0];  y1 = XYZ[i][1];  z1 = XYZ[i][2];
-          switch(facing) {
-            case "caudal":
-              x2 = XYZ[i+1][0];  y2 = XYZ[i+1][1];  z2 = XYZ[i+1][2];
-              break;
-            case "rostral":
-              x2 = XYZ[i-1][0];  y2 = XYZ[i-1][1];  z2 = XYZ[i-1][2];
-              break;
           }
-          dx = x2 - x1;  dy = y2 - y1;  dz = z2 - z1;
-          r = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2) + Math.pow(dz,2));
-          dr = kr / r;
-          x0 = x1 - dx * dr;  y0 = y1 - dy * dr;  z0 = z1 - dz * dr;
-          api.setCameraLookAt([x0,y0,z0], XYZ[i], 2);
         }
-
       }
+
+      // Una vez que tenemos los nodos, ligamos los botones a funciones externas
+      bindUIEvents();
     });
 
-    // muestra/apaga la etiqueta/imagen correspondiente, cuando se clica sobre una parte sensible del intestino, una flecha o un target
-    api.addEventListener('click', function(info) {
-      if (info.instanceID == null) {
-        document.getElementById("label1").style.display = "none";
-        textlabel0 = "";
-        document.getElementById("image1").style.display = "none";
-        filename0 = "";
-      }
-      else {
-        if (listedNodes[info.instanceID]) {
-          document.getElementById("image1").style.display = "none";
-          var textlabel = listedNodes[info.instanceID];
-          if (textlabel == textlabel0) {
-            document.getElementById("label1").style.display = "none";
-            textlabel0 = "";
-          }
-          else {
-            document.getElementById('label1').innerHTML = textlabel;
-            document.getElementById("label1").style.display = "block";
-            textlabel0 = textlabel;
-            filename0 = "";
-          }
-        }
-        else if (listedTargets[info.instanceID]) {
-          document.getElementById("label1").style.display = "none";
-          var filename = listedTargets[info.instanceID];
-          if (filename == filename0) {
-            document.getElementById("image1").style.display = "none";
-            filename0 = "";
-          }
-          else {
-            document.getElementById("image1").src = directory + filename;
-            document.getElementById("image1").style.width = "400px";
-            document.getElementById("image1").style.display = "block";
-            filename0 = filename;
-            textlabel0 = "";
-          }
-        }
-      };
-    },
-    { pick: 'slow' });
+    // Click sobre el modelo: etiquetas o imágenes
+    apiRef.addEventListener('click', function (info) {
+      handleClickOnScene(info);
+    }, { pick: 'slow' });
 
+    // Hover highlight (igual que en colon)
+    enableHoverHighlight();
   });
-};
+}
 
-// Load the model
-client.init( model, {
+client.init(model, {
   success: success,
   error: error,
   ui_infos: 0,
@@ -340,115 +229,604 @@ client.init( model, {
   supersample: 0
 });
 
-// Funciones Propias - Solo por si se usaran
-//creadas para solo tener que llamarlas desde el .HTML
+// ============================
+//   ENLACE BOTONES → FUNCIONES
+// ============================
+function bindUIEvents() {
+  // Lado izquierdo
+  if (node_IntestinoL && node_TargetsL && node_FlechasL && buttonA) {
+    buttonA.addEventListener('click', toggleLeftSide);
+  }
 
-//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
-function showAndHide(key) {
-  const node = listedKeys[key].nodeName;
-  const group = listedKeys[key].kGroup;
-  const checkBox = document.getElementById(key);
-  const checkGroup = document.getElementById(group);
+  // Lado derecho
+  if (node_IntestinoR && node_TargetsR && node_FlechasR && buttonB) {
+    buttonB.addEventListener('click', toggleRightSide);
+  }
 
-  if (checkBox.checked && checkGroup.checked) {
-    apiRef.show(idNodes[node]);
-    if (key === "keyP") { displayArterias(true); }
-    if (key === "keyR") { displayVenas(true); }
+  // Targets ON/OFF
+  if (node_TargetsR && node_TargetsL && buttonC) {
+    buttonC.addEventListener('click', togglePictures);
+    // Inicialmente esconder targets
+    apiRef.hide(node_TargetsR);
+    apiRef.hide(node_TargetsL);
+  }
+
+  // Instrucciones
+  if (buttonD) {
+    buttonD.addEventListener('click', toggleInstructions);
+  }
+
+  // Facing rostral / caudal
+  if (buttonE1) {
+    buttonE1.addEventListener('click', setFacingRostral);
+  }
+  if (buttonE2) {
+    buttonE2.addEventListener('click', setFacingCaudal);
+  }
+
+  // Dentro / fuera
+  if (buttonF1) {
+    buttonF1.addEventListener('click', goInside);
+  }
+  if (buttonF2) {
+    buttonF2.addEventListener('click', goOutside);
+  }
+
+  // Desplazamiento dentro del intestino
+  if (buttonG) {
+    buttonG.addEventListener('click', moveEndoBackward);
+  }
+  if (buttonH) {
+    buttonH.addEventListener('click', moveEndoForward);
+  }
+}
+
+// ============================
+//   FUNCIONES DE VISOR
+// ============================
+
+// ON/OFF mitad izquierda (IntestinoL, TargetsL, FlechasL)
+function toggleLeftSide() {
+  if (!apiRef || !node_IntestinoL || !node_TargetsL || !node_FlechasL) return;
+
+  switch (leftSide) {
+    case "visible":
+      leftSide = "invisible";
+      buttonA.style.backgroundColor = "#888888";
+      apiRef.hide(node_IntestinoL);
+      apiRef.hide(node_TargetsL);
+      apiRef.hide(node_FlechasL);
+      break;
+    case "invisible":
+      leftSide = "visible";
+      buttonA.style.backgroundColor = "#1caad9";
+      apiRef.show(node_IntestinoL);
+      if (pictures == "on") { apiRef.show(node_TargetsL); }
+      apiRef.show(node_FlechasL);
+      break;
+  }
+}
+
+// ON/OFF mitad derecha (IntestinoR, TargetsR, FlechasR)
+function toggleRightSide() {
+  if (!apiRef || !node_IntestinoR || !node_TargetsR || !node_FlechasR) return;
+
+  switch (rightSide) {
+    case "visible":
+      rightSide = "invisible";
+      buttonB.style.backgroundColor = "#888888";
+      apiRef.hide(node_IntestinoR);
+      apiRef.hide(node_TargetsR);
+      apiRef.hide(node_FlechasR);
+      break;
+    case "invisible":
+      rightSide = "visible";
+      buttonB.style.backgroundColor = "#1caad9";
+      apiRef.show(node_IntestinoR);
+      if (pictures == "on") { apiRef.show(node_TargetsR); }
+      apiRef.show(node_FlechasR);
+      break;
+  }
+}
+
+// ON/OFF de las zonas sensibles (Targets) e imágenes
+function togglePictures() {
+  if (!apiRef || !node_TargetsL || !node_TargetsR) return;
+
+  switch (pictures) {
+    case "on":
+      pictures = "off";
+      buttonC.style.backgroundColor = "#888888";
+      apiRef.hide(node_TargetsR);
+      apiRef.hide(node_TargetsL);
+      document.getElementById("image1").style.display = "none";
+      break;
+
+    case "off":
+      pictures = "on";
+      buttonC.style.backgroundColor = "#1caad9";
+      if (leftSide  == "visible") { apiRef.show(node_TargetsR); }
+      if (rightSide == "visible") { apiRef.show(node_TargetsL); }
+      break;
+  }
+}
+
+// Muestra/oculta la imagen de instrucciones
+function toggleInstructions() {
+  const label  = document.getElementById("label1");
+  const img    = document.getElementById("image1");
+  const filename = directory + "instrucciones.png";
+
+  // mismo comportamiento que el original
+  if (filename !== filename0) {
+    if (label) label.style.display = "none";
+    textlabel0 = "";
+    img.src = filename;
+    img.style.width = "700px";
+    img.style.display = "block";
+    filename0 = filename;
   } else {
-    apiRef.hide(idNodes[node]);
-    if (key === "keyP") { displayArterias(false); }
-    if (key === "keyR") { displayVenas(false); }
+    img.style.display = "none";
+    filename0 = "";
   }
 }
 
-//Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga una pestaña Ej: "Exploración" en abdomen.Ca
-let showToolTip=false;
-function toogleToolTips(){
-if (showToolTip){
-  for (let i = 0; i<8; i++){
-    apiRef.hideAnnotation(i, function(err, index) {
-      if (!err) {
-          window.console.log('Hiding annotation', index + 1);
+// Facing rostral
+function setFacingRostral() {
+  document.getElementById("keyE1").style.display = "none";
+  document.getElementById("keyE2").style.display = "inline";
+  facing = "rostral";
+  setCamera(i);
+}
+
+// Facing caudal
+function setFacingCaudal() {
+  document.getElementById("keyE1").style.display = "inline";
+  document.getElementById("keyE2").style.display = "none";
+  facing = "caudal";
+  setCamera(i);
+}
+
+// Entrar al interior: ir al punto de XYZ más cercano a la cámara
+function goInside() {
+  if (!apiRef) return;
+
+  apiRef.getCameraLookAt(function (err, camera) {
+    if (err) return;
+
+    var x1 = camera.position[0];
+    var y1 = camera.position[1];
+    var z1 = camera.position[2];
+
+    var jmin = 0;
+    var Dmin = 0;
+
+    for (var j = 0; j < N; j++) {
+      var x2 = XYZ[j][0];
+      var y2 = XYZ[j][1];
+      var z2 = XYZ[j][2];
+
+      var dx = x2 - x1;
+      var dy = y2 - y1;
+      var dz = z2 - z1;
+      var D  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+      if (j === 0) {
+        jmin = j;
+        Dmin = D;
+      } else {
+        if (D < Dmin) {
+          jmin = j;
+          Dmin = D;
+        }
       }
+    }
+
+    i = jmin;
+    buttonI.innerHTML = i;
+    setCamera(i);
   });
-  }
-} else {
-  for (let i = 0; i<8; i++){
-    apiRef.showAnnotation(i, function(err, index) {
-      if (!err) {
-          window.console.log('Showing annotation', index + 1);
-      }
+
+  document.getElementById("keyF1").style.display = "none";
+  document.getElementById("keyF2").style.display = "inline";
+  inout = "in";
+}
+
+// Salir hacia fuera: alejar la cámara en Z
+function goOutside() {
+  if (!apiRef) return;
+
+  apiRef.getCameraLookAt(function (err, camera) {
+    if (err) return;
+
+    var x1 = camera.position[0];
+    var y1 = camera.position[1];
+    var z1 = camera.position[2];
+
+    apiRef.setCameraLookAt([x1, y1, 200], [x1, y1, z1], 2);
   });
-}
-}
-showToolTip=!showToolTip
-}
 
-
-// Muestra nombres de arterias/venas en la "caja" Ej: en abdomen.Ca
-function displayArterias(show) {
-  const keys = ["keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8"];
-  for (const key of keys) {
-    const node = listedKeys[key].nodeName;
-    if (show) { apiRef.show(idNodes[node]); }
-    else { apiRef.hide(idNodes[node]); }
-  }
+  document.getElementById("keyF1").style.display = "inline";
+  document.getElementById("keyF2").style.display = "none";
+  inout = "out";
 }
 
-function displayVenas(show) {
-  const keys = ["keyS1", "keyS2", "keyS3"];
-  for (const key of keys) {
-    const node = listedKeys[key].nodeName;
-    if (show) { apiRef.show(idNodes[node]); }
-    else { apiRef.hide(idNodes[node]); }
-  }
-}
+// Desplaza vista dentro del intestino hacia caudal (i++)
+function moveEndoBackward() {
+  if (XYZ.length === 0) return; 
 
-// Activa-Desactiva grupos de botones Ej: en abdomen.Ca
-function showGroup(groupId) {
-  const checkGroup = document.getElementById(groupId);
-  const group = [];
-
-  switch (groupId) {
-    case "key1":
-      group.push("keyY1", "keyY2", "keyY3", "keyY4");
-      break;
-    case "key2":
-      group.push("keyB", "keyC", "keyD", "keyE", "keyF", "keyG", "keyH", "keyI", "keyJ", "keyK");
-      break;
-    case "key3":
-      group.push("keyL", "keyM", "keyN", "keyO");
-      break;
-    case "key4":
-      group.push("keyP", "keyR", "keyT", "keyU");
-      break;
-    case "key5":
-      group.push("keyV", "keyW");
-      break;
+  if (i < N - 1) { 
+      i++; 
   }
 
-  for (const key of group) {
-    const node = listedKeys[key].nodeName;
-    const checkBox = document.getElementById(key);
+  // Actualizar contador
+  const counter = document.getElementById("keyI");
+  if (counter) counter.innerHTML = i;
 
-    if (checkGroup.checked) {
-      if (groupId === "key1" || checkBox.checked) { apiRef.show(idNodes[node]); }
-      if (key === "keyP" && checkBox.checked) { displayArterias(true); }
-      if (key === "keyR" && checkBox.checked) { displayVenas(true); }
-      if (groupId !== "key1") {
-        checkBox.disabled = false;
-        labelsHTML[labelsFor[key]].style.color = 'blue';
-      }
+  // Reposicionar cámara
+  setCamera(i);
+
+  // Ajustar botones
+  document.getElementById("keyF1").style.display = "none";
+  document.getElementById("keyF2").style.display = "inline";
+
+  inout = "in";
+}
+
+// Desplaza vista dentro del intestino hacia rostral (i--)
+function moveEndoForward() {
+  if (XYZ.length === 0) return; 
+
+  if (i > 1) { 
+      i--; 
+  }
+
+  // Actualizar contador
+  const counter = document.getElementById("keyI");
+  if (counter) counter.innerHTML = i;
+
+  // Reposicionar cámara
+  setCamera(i);
+
+  // Ajustar botones de estado
+  document.getElementById("keyF1").style.display = "none";
+  document.getElementById("keyF2").style.display = "inline";
+
+  inout = "in";
+
+}
+
+// Coloca la cámara según i y facing (lógica original)
+function setCamera(iIndex) {
+  var kr = 0.5;
+  var x1 = XYZ[iIndex][0];
+  var y1 = XYZ[iIndex][1];
+  var z1 = XYZ[iIndex][2];
+
+  var x2, y2, z2;
+
+  switch (facing) {
+    case "caudal":
+      x2 = XYZ[iIndex + 1][0];
+      y2 = XYZ[iIndex + 1][1];
+      z2 = XYZ[iIndex + 1][2];
+      break;
+    case "rostral":
+      x2 = XYZ[iIndex - 1][0];
+      y2 = XYZ[iIndex - 1][1];
+      z2 = XYZ[iIndex - 1][2];
+      break;
+  }
+
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  var dz = z2 - z1;
+
+  var r  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+  var dr = kr / r;
+
+  var x0 = x1 - dx * dr;
+  var y0 = y1 - dy * dr;
+  var z0 = z1 - dz * dr;
+
+  apiRef.setCameraLookAt([x0, y0, z0], XYZ[iIndex], 2);
+}
+
+// ============================
+//   CLICK EN LA ESCENA
+// ============================
+function handleClickOnScene(info) {
+  if (info.instanceID == null) {
+    document.getElementById("label1").style.display = "none";
+    textlabel0 = "";
+    document.getElementById("image1").style.display = "none";
+    filename0 = "";
+    return;
+  }
+
+  // ¿Es una zona tipo Intestino/Flecha? → etiqueta
+  if (listedNodes[info.instanceID]) {
+    document.getElementById("image1").style.display = "none";
+    var textlabel = listedNodes[info.instanceID];
+
+    if (textlabel === textlabel0) {
+      document.getElementById("label1").style.display = "none";
+      textlabel0 = "";
     } else {
-      apiRef.hide(idNodes[node]);
-      if (key === "keyP") { displayArterias(false); }
-      if (key === "keyR") { displayVenas(false); }
-      if (groupId !== "key1") {
-        checkBox.disabled = true;
-        labelsHTML[labelsFor[key]].style.color = 'gray';
-      }
+      document.getElementById('label1').innerHTML = textlabel;
+      document.getElementById("label1").style.display = "block";
+      textlabel0 = textlabel;
+      filename0 = "";
+    }
+  }
+  // ¿Es un target? → imagen endoscopia
+  else if (listedTargets[info.instanceID]) {
+    document.getElementById("label1").style.display = "none";
+    var filename = listedTargets[info.instanceID];
+
+    if (filename === filename0) {
+      document.getElementById("image1").style.display = "none";
+      filename0 = "";
+    } else {
+      document.getElementById("image1").src = directory + filename;
+      document.getElementById("image1").style.width = "400px";
+      document.getElementById("image1").style.display = "block";
+      filename0 = filename;
+      textlabel0 = "";
     }
   }
 }
-// FIN funciones propias
-//FIN Sketchfab
+
+//Catmull-Rom Spline - Para hacer que el recorrido de la endoscopia siga la curva
+function catmullRom(p0, p1, p2, p3, t) {
+    const t2 = t * t;
+    const t3 = t2 * t;
+
+    return [
+        0.5 * (2*p1[0] + (-p0[0] + p2[0]) * t + (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t2 + (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t3),
+        0.5 * (2*p1[1] + (-p0[1] + p2[1]) * t + (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t2 + (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t3),
+        0.5 * (2*p1[2] + (-p0[2] + p2[2]) * t + (2*p0[2] - 5*p1[2] + 4*p2[2] - p3[2]) * t2 + (-p0[2] + 3*p1[2] - 3*p2[2] + p3[2]) * t3)
+    ];
+}
+//FIN
+
+//   INTERPOLACIÓN SUAVE ENTRE PUNTOS XYZ
+// =====================================================
+
+function animateSpline(i, callback = null) {
+    let steps = splineSteps;
+    let t = 0;
+
+    // Seguridad de bordes
+    if (i < 1) i = 1;
+    if (i > N - 3) i = N - 3;
+
+    const p0 = XYZ[i - 1];
+    const p1 = XYZ[i];
+    const p2 = XYZ[i + 1];
+    const p3 = XYZ[i + 2];
+
+    function frame() {
+        t += 1/steps;
+        if (t > 1) t = 1;
+
+        // Punto interpolado en spline
+        const pos = catmullRom(p0, p1, p2, p3, t);
+        lastCameraPos = pos;  // 🔥 GUARDAMOS LA POSICIÓN REAL
+
+        // Punto ligeramente adelantado para "mirar"
+        const posLook = catmullRom(p0, p1, p2, p3, Math.min(t + 0.02, 1));
+
+        apiRef.setCameraLookAt(
+            [pos[0] * UNIT_FIX, pos[1] * UNIT_FIX, pos[2] * UNIT_FIX],
+            [posLook[0] * UNIT_FIX, posLook[1] * UNIT_FIX, posLook[2] * UNIT_FIX],
+            0.0
+        );
+
+        if (t < 1) {
+            requestAnimationFrame(frame);
+        } else if (callback) {
+            callback();
+        }
+    }
+
+    frame();
+}
+// FIN INTERPOLACION
+
+function orientToNextPoint() {
+    if (!apiRef || XYZ.length < 2) return;
+
+    // 1. POSICIÓN ACTUAL REAL (si viene del spline)
+    const currentPos = lastCameraPos ?
+        [ lastCameraPos[0], lastCameraPos[1], lastCameraPos[2] ]
+        :
+        null;
+
+    let nextIndex = (facing === "caudal")
+        ? Math.min(i + 1, N - 1)
+        : Math.max(i - 1, 0);
+
+    const nextPos = XYZ[nextIndex];
+
+    // Si no tenemos lastCameraPos, lo pedimos a Sketchfab 1 frame después
+    if (!currentPos) {
+        requestAnimationFrame(() => {
+            apiRef.getCameraLookAt((err, cam) => {
+                if (err || !cam) return;
+                apiRef.setCameraLookAt(cam.position, nextPos, 0.5);
+            });
+        });
+        return;
+    }
+
+    // Si SÍ tenemos lastCameraPos → orientación perfecta
+    apiRef.setCameraLookAt(
+        currentPos,   // posición REAL exacta del spline
+        nextPos,      // mira al siguiente punto
+        0.5           // suave
+    );
+}
+
+
+// --------------------------------------------------------
+// MOVIMIENTO SUAVE HASTA EL PUNTO 1 (inicio del recorrido)
+// --------------------------------------------------------
+function smoothMoveToStart(callback) {
+    apiRef.getCameraLookAt((err, cam) => {
+        if (err) return callback();
+
+        const startPos = XYZ[1];
+        const lookPos  = XYZ[2];
+
+        const steps = 60;
+        let t = 0;
+
+        const p0 = cam.position;
+        const l0 = cam.target;
+
+        function frame() {
+            t += 1 / steps;
+            if (t > 1) t = 1;
+
+            const pos = [
+                p0[0] + (startPos[0] - p0[0]) * t,
+                p0[1] + (startPos[1] - p0[1]) * t,
+                p0[2] + (startPos[2] - p0[2]) * t
+            ];
+
+            const look = [
+                l0[0] + (lookPos[0] - l0[0]) * t,
+                l0[1] + (lookPos[1] - l0[1]) * t,
+                l0[2] + (lookPos[2] - l0[2]) * t
+            ];
+
+            apiRef.setCameraLookAt(pos, look, 0.0);
+
+            if (t < 1) {
+                requestAnimationFrame(frame);
+            } else {
+                callback();   // cuando termina → seguimos
+            }
+        }
+
+        frame();
+    });
+}
+
+
+//   Función autoPlay endoscopia
+// =====================================================
+
+function toggleAutoEndoscopy(buttonId) {
+  if (XYZ.length === 0) return; 
+
+  const btn = document.getElementById(buttonId);
+  const icon = btn.querySelector("span");
+
+  // Si ya está corriendo → parar
+if (autoRunning) {
+    autoRunning = false;
+
+    if (icon) icon.innerHTML = "play_circle";
+
+    // orientar suavemente hacia el siguiente punto
+    orientToNextPoint(i);
+
+
+    return;
+}
+
+  // Si el visor NO ha entrado aún al colon (i = 0),
+  // el autoplay saltaría feo → forzamos inicio en 1 sin mover cámara.
+  // Primera vez que entra → mover suavemente al punto 1
+  if (i === 0) {
+      i = 1;
+      const counter = document.getElementById("keyI");
+      if (counter) counter.innerHTML = i;
+
+      // Bloquear autoplay mientras se mueve al inicio
+      autoRunning = true;
+      icon.innerHTML = "pause_circle";
+
+      smoothMoveToStart(() => {
+          autoStep();   // cuando termina → empieza el recorrido normal
+      });
+
+      return; // importante: evitamos iniciar el autoplay dos veces
+  }
+
+
+  // Iniciar autoplay
+  autoRunning = true;
+
+  // Cambiar icono a PAUSE
+  if (icon) icon.innerHTML = "pause_circle";
+
+  // Forzar estado "inside"
+  document.getElementById("keyF1").style.display = "none";
+  document.getElementById("keyF2").style.display = "inline";
+  inout = "in";
+
+  function autoStep() {
+    if (XYZ.length === 0) return; 
+
+    if (!autoRunning) return;
+
+    if (facing === "caudal") {
+
+      if (i >= N - 2) return toggleAutoEndoscopy(buttonId);
+
+      animateSpline(i, () => {
+        i++;
+        keyI.innerHTML = i;
+        autoStep();
+      });
+
+    } else {
+
+      if (i <= 1) return toggleAutoEndoscopy(buttonId);
+
+      animateSpline(i, () => {
+        i++;
+        keyI.innerHTML = i;
+        autoStep();
+      });
+
+    }
+  }
+
+  autoStep();
+}
+
+//Fin función autoPlay
+
+// =======================================================
+//   ILUMINAR ÁREAS AL PASAR EL RATÓN (tu función)
+// =======================================================
+function enableHoverHighlight() {
+  if (!apiRef) {
+    console.warn("Sketchfab API no lista todavía");
+    return;
+  }
+
+  apiRef.addEventListener("nodeMouseEnter", function (info) {
+    var y = info.material;
+    if (!y || !y.channels || !y.channels.EmitColor) return;
+
+    y.channels.EmitColor.factor = 1;
+    y.channels.EmitColor.enable = true;
+    y.channels.EmitColor.color = [0.1, 0.1, 0.0];
+    apiRef.setMaterial(y, function () {});
+  }, { pick: 'fast' });
+
+  apiRef.addEventListener("nodeMouseLeave", function (info) {
+    var y = info.material;
+    if (!y || !y.channels || !y.channels.EmitColor) return;
+
+    y.channels.EmitColor.factor = 1;
+    y.channels.EmitColor.enable = false;
+    y.channels.EmitColor.color = [0.5, 0.5, 0.0];
+    apiRef.setMaterial(y, function () {});
+  }, { pick: 'fast' });
+}

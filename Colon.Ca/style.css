@@ -8,11 +8,6 @@ iframe {
   border: none;
 }
 
-/* Para elegir opacidad de las imagenes de los logos */
-img {
-  width: 100%;
-}
-
 /* Para modificar posición y tamaño boton veterinaria UCM */
 /*Si se consigue ajustar desde html la posición de los botones dentro de un mismo 
  se podría usar esta opción para esta imagen y que se adapte al tamaño de los botones*/
@@ -48,6 +43,13 @@ img {
   width: 200px;
 }
 
+/* Para elegir opacidad de las imagenes de los logos */
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+/* Para elegir cómo se ven las etiquetas de los nombres*/
 label {
   color: black;
   background-color: white;
@@ -100,29 +102,30 @@ button:active {
   font-weight: bold;
 }
 
+button.toggle-active {
+  background-color: #df9a4b;
+  color: white;
+}
+
 .symbols{
   background: #df9a4b;
   width: 100%;
 }
 
-#keyA, #keyB, #keyD, #keyE1, #keyF1, #keyG {
-  width: 32%;
-}
-
 #keyC {
-  width: 32%;
   background: #888888;
 }
 
 #keyE2, #keyF2, #keyH {
-  width: 32%;
   background: #92D050;
 }
 
+/*Esto determina cómo se ve el contador de posición*/
 #keyI {
   width: 32%; color: black; background: white; font-size: 25px; font-weight: bold;
 }
 
+/*Esto determina cómo se ve la foto de endoscopia cuando está visible*/
 #image2 {
   width: 700px;
 }
@@ -135,9 +138,11 @@ button:hover {
 button:active {
   font-weight: bold;
 }
-/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
-button:hover {
-  opacity: 0.9;
+
+.speedControls {
+  margin-top: 10px;
+  color: white;
+  font-size: 16px;
 }
 
 /*Esto modifica tamaño del slider*/
@@ -152,3 +157,4 @@ button:hover {
   width: 33%;
   margin-right: 4px;
 }
+

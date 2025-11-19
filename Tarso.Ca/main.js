@@ -88,9 +88,9 @@ function toogleToolTips() {
   }
   const btn = document.getElementById("key1");
   if (!showToolTip) {
-    btn.classList.replace("hideButton", "showKey");
+    btn.classList.replace("hideKey", "showKey");
   } else {
-    btn.classList.replace("showKey", "hideButton");
+    btn.classList.replace("showKey", "hideKey");
   };
   showToolTip = !showToolTip
 };

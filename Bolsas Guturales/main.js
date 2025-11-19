@@ -59,21 +59,6 @@ success = function (api) {
     });
   });
 
-  //Abre una ventana con informacion de uso del visor
-  buttonC.addEventListener('click', function () {
-    alert("Información de uso\n\n" +
-      "- Botón izquierdo: gira el modelo\n" +
-      "- Botón central: desplaza el modelo\n" +
-      "- Girar rueda: zoom\n" +
-      "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
-      "- Clic en calavera: muestra/oculta cráneo de équido de referencia\n" +
-      "- Clic en nota: muestra/oculta anotaciones\n" +
-      "- Clic en plano horizontal: muestra/oculta plano rostral del modelo\n" +
-      "- Clic en plano lateral: muestra/oculta plano parasagital del modelo\n" +
-      "- Opciones del menú: encienden/apagan un órgano o grupo de órganos"
-    );
-  });
-
   // Puntos de cámara para keyP y keyQ
   const camPos_P = [-0.007580537255248081, -0.9563176979727426, 0.22682669953700535];  // Vista lateral izquierda, por ejemplo
   const camTarget_P = [0.014990176352229136, 0.05734959364337239, 0.20123776708097257];
@@ -105,6 +90,21 @@ client.init(model, {
 
 // Funciones Propias
 //creadas para solo tener que llamarlas desde el .HTML
+
+//Abre una ventana con informacion de uso del visor
+function showInfo(){
+    alert("Información de uso\n\n" +
+    "- Botózn izquierdo: gira el modelo\n" +
+    "- Botón central: desplaza el modelo\n" +
+    "- Girar rueda: zoom\n" +
+    "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
+    "- Clic en calavera: muestra/oculta cráneo de équido de referencia\n" +
+    "- Clic en nota: muestra/oculta anotaciones\n" +
+    "- Clic en plano horizontal: muestra/oculta plano rostral del modelo\n" +
+    "- Clic en plano lateral: muestra/oculta plano parasagital del modelo\n" +
+    "- Opciones del menú: encienden/apagan un órgano o grupo de órganos"
+  );
+}
 
 //Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(nodeName, buttonId = null) {
@@ -147,6 +147,7 @@ function toogleToolTips() {
   showToolTip = !showToolTip
 };
 
+//Para buscar nodes con siglas/palabras en común
 function findNodeGroups(code) {
   return nodeNames.filter((nodeName)=> nodeName.includes(code));
 }

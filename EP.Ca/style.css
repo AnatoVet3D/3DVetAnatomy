@@ -80,9 +80,15 @@ button {
   background: #6fc24e;
   width: 32%;
 }
+
 /* Para poder elegir el color del boton cuando se apaga */
 .hideButton {
   background: #888888;
+}
+
+.hideKey {
+  background: #888888;
+  width: 32%;
 }
 
 /*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
