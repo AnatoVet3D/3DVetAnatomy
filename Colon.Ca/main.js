@@ -647,14 +647,19 @@ function highlightView() {
   }
 
   const showList = [
-      "Colon_trasnverso.Fin",
+      "Colon_ascendente.2",
       "Ileon",
       "Ciego",
       "Mesocolon"
   ];
 
   const hideList = [
+      "Piel_del_ano",
+      "Esfinter_anal",
+      "Canal_anal",
+      "Mesorrecto",
       "Recto",
+      "Colon_ascendente",
       "Colon_trasnverso",
       "Flexura_colica_derecha",
       "Flexura_colica_izquierda",
@@ -886,6 +891,7 @@ function limpiarNombre(str) {
   //   - regex: formas rotas de una palabra
   //   - replace: forma correcta con tildes
   const fixes = [
+    { regex: /esf��nter|esf�nter|esfï¿½ï¿½nter|esfï¿½nter|esfinter/i, replace: "esfínter" },
     { regex: /c��lica|c�lica|cï¿½ï¿½lica|cï¿½lica|colica/i, replace: "cólica" },
     { regex: /cecoc��lico|cecoc�lico|cecocï¿½ï¿½lico|cecocï¿½lico|cecocolico/i, replace: "cecocólico" },
     { regex: /ileon|ï¿½leon|��leon|�leon/i, replace: "íleon" },
