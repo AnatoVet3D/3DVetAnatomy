@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Senos Paranasales y Bolsas Guturales Équido</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <title>Senos Paranasales y Bolsas Guturales Équido</title>
+  <!-- Nombre que queremos que salga en la pestaña del navegador -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link rel="stylesheet" href="style.css">
 </head>
@@ -21,18 +22,22 @@
     </div>
 
     <div class="button-container">
-      <button class= "symbols" id="keyB" onclick="showAndHide('Hueso001', 'keyB');showAndHide('Hueso002', 'keyB');showAndHide('Hueso003', 'keyB');showAndHide('Hueso004', 'keyB')"><span class="material-symbols-outlined">skull</span></button>
-      <button class= "symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
-      <button class= "symbols" id="keyP" onclick="showAndHide('Imagen CorteCraneal', 'keyP');showAndHide('Hueso001', 'keyP');showAndHide('Hueso002', 'keyP')"><span class="material-symbols-outlined">split_scene_down</span></button>
-      <button class= "symbols" id="keyQ" onclick="showAndHide('Imagen CorteParasagital', 'keyQ');showAndHide('Hueso001', 'keyQ');showAndHide('Hueso003', 'keyQ')"><span class="material-symbols-outlined">split_scene_left</span></button>
+      <button class="symbols" id="keyB" onclick="setSkullView('keyB')"><span class="material-symbols-outlined">skull</span></button>
+      <button class="symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
+      <button class="symbols hideButton" id="keyP" onclick="setSkullView('keyP')"><span class="material-symbols-outlined">split_scene_down</span></button>
+      <button class="symbols hideButton" id="keyQ" onclick="setSkullView('keyQ')"><span class="material-symbols-outlined">split_scene_left</span></button>
       <!-- <button class= "showKey" id="key1" onclick="toogleToolTips()" checked><span class="material-symbols-outlined">edit_square</span></button> -->
     </div>
 
     <!-- <button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label> -->
-    <button class="showButton" id="keyA" onclick="showAndHide('V.Yugular', 'keyA')">Venas</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyA" onclick="showAndHide('V.Yugular', 'keyA')">Venas</button>
+
+    <!-- Nombre del botón -->
     <button class="showButton" id="keyD" onclick="showAndHide('A.gutural1', 'keyD')">Arterias</button>
     <button class="showButton" id="keyE" onclick="showAndHideGroup('BolsaGutural', 'keyE')">Bolsas Guturales</button>
-    <button class="showButton" id="keyH" onclick="showAndHide('Hioides', 'keyH')">Hioides</button> <!-- Nombre del botón -->
+    <button class="showButton" id="keyH" onclick="showAndHide('Hioides', 'keyH')">Hioides</button>
+
+    <!-- Nombre del botón -->
     <button class="showButton" id="keyG" onclick="showAndHide('Diverticulo_TrompaAuditiva', 'keyG')">Divertículo-Trompa Auditiva</button>
     <button class="showButton" id="keyI" onclick="showAndHide('Meatos-cav_nasal', 'keyI')">Meatos - Cavidad nasal</button>
     <button class="showButton" id="keyJ" onclick="showAndHide('Seno_Conchofrontal', 'keyJ')">Senos Conchofrontales</button>
@@ -52,9 +57,9 @@
       <img src="../assets/img/CreativeCommons.png">
     </div>
   </div>
-  
+
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
   <script src="main.js"></script>
 </body>
-</html>
 
+</html>

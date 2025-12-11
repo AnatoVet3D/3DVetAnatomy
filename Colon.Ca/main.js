@@ -183,6 +183,8 @@ success = function( api ) {
 
     //Para que se pueda aplicar el hover sobre los modelos cuando se pasa el ratón por encima
     enableHoverHighlight();
+
+    ListaAnimaciones();
   });
 
 
@@ -982,6 +984,16 @@ function enableHoverHighlight() {
   });
 
   //console.log("Hover highlight ACTIVADO (versión restauración directa)");
+}
+
+
+function ListaAnimaciones() {
+
+  apiRef.getAnimations(function(err, animations) {
+      if (!err) {
+          window.console.log(animations);
+      }
+  });
 }
 
 // FIN funciones propias
