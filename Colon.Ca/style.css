@@ -122,8 +122,19 @@ button.toggle-active {
 
 /*Esto determina cómo se ve el contador de posición*/
 #keyI {
-  width: 32%; color: black; background: white; font-size: 25px; font-weight: bold;
+  width: 32%; 
+  color: black; 
+  background: white; 
+  font-size: 25px; 
+  font-weight: bold;
 }
+
+#keyR {
+  width: 32%;
+  display: block;
+  margin: 4px auto 0 auto;
+}
+
 
 /*Esto determina cómo se ve la foto de endoscopia cuando está visible*/
 #image2 {

@@ -386,13 +386,76 @@ function animateSpline(i, callback = null) {
 }
 // FIN INTERPOLACION
 
+// --------------------------------------------------------
+// MOVIMIENTO SUAVE HASTA EL PUNTO 1 (inicio del recorrido)
+// --------------------------------------------------------
+function smoothMoveToStart(callback) {
+  if (!apiRef || XYZ.length < 3) {
+    if (callback) callback();
+    return;
+  }
+
+  apiRef.getCameraLookAt((err, cam) => {
+    if (err) {
+      if (callback) callback();
+      return;
+    }
+
+    // Punto 1 y 2 de la curva, convertidos a METROS
+    const startPos = [
+      XYZ[1][0] * UNIT_FIX,
+      XYZ[1][1] * UNIT_FIX,
+      XYZ[1][2] * UNIT_FIX
+    ];
+    const lookPos  = [
+      XYZ[2][0] * UNIT_FIX,
+      XYZ[2][1] * UNIT_FIX,
+      XYZ[2][2] * UNIT_FIX
+    ];
+
+    const p0 = cam.position.slice();
+    const l0 = cam.target.slice();
+
+    const steps = 60;
+    let t = 0;
+
+    function frame() {
+      t += 1 / steps;
+      if (t > 1) t = 1;
+
+      const pos = [
+        p0[0] + (startPos[0] - p0[0]) * t,
+        p0[1] + (startPos[1] - p0[1]) * t,
+        p0[2] + (startPos[2] - p0[2]) * t
+      ];
+
+      const look = [
+        l0[0] + (lookPos[0] - l0[0]) * t,
+        l0[1] + (lookPos[1] - l0[1]) * t,
+        l0[2] + (lookPos[2] - l0[2]) * t
+      ];
+
+      // Ponemos duración 0 porque ya interpolamos “a mano”
+      apiRef.setCameraLookAt(pos, look, 0.0);
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else if (callback) {
+        callback();   // cuando termina → seguimos con el autoplay normal
+      }
+    }
+
+    frame();
+  });
+}
+
+
 //   Función autoPlay endoscopia
 // =====================================================
-
 function toggleAutoEndoscopy(buttonId) {
   if (XYZ.length === 0) return; 
 
-  const btn = document.getElementById(buttonId);
+  const btn  = document.getElementById(buttonId);
   const icon = btn.querySelector("span");
 
   // Si ya está corriendo → parar
@@ -405,15 +468,7 @@ function toggleAutoEndoscopy(buttonId) {
     return;
   }
 
-  // Si el visor NO ha entrado aún al colon (i = 0),
-  // el autoplay saltaría feo → forzamos inicio en 1 sin mover cámara.
-  if (i === 0) {
-    i = 1;
-    const counter = document.getElementById("keyI");
-    if (counter) counter.innerHTML = i;
-  }
-
-  // Iniciar autoplay
+  // Vamos a arrancar autoplay
   autoRunning = true;
 
   // Cambiar icono a PAUSE
@@ -426,7 +481,6 @@ function toggleAutoEndoscopy(buttonId) {
 
   function autoStep() {
     if (XYZ.length === 0) return; 
-
     if (!autoRunning) return;
 
     if (facing === "caudal") {
@@ -439,7 +493,7 @@ function toggleAutoEndoscopy(buttonId) {
         autoStep();
       });
 
-    } else {
+    } else { // facing rostral
 
       if (i <= 1) return toggleAutoEndoscopy(buttonId);
 
@@ -452,10 +506,25 @@ function toggleAutoEndoscopy(buttonId) {
     }
   }
 
+  // -------- PRIMERA VEZ: i = 0 → entrar SUAVEMENTE al punto 1 --------
+  if (i === 0) {
+    i = 1;
+    const counter = document.getElementById("keyI");
+    if (counter) counter.innerHTML = i;
+
+    // Movimiento suave desde donde esté la cámara hasta el punto 1
+    smoothMoveToStart(() => {
+      // cuando termina la entrada suave → empezamos recorrido normal
+      if (autoRunning) autoStep();
+    });
+
+    return; // importantísimo para no llamar también a autoStep() justo debajo
+  }
+
+  // Si ya habíamos estado dentro (i > 0), arrancamos directamente el spline
   autoStep();
 }
 
-//Fin función autoPlay
 
 
 //   Función ENTRAR/SALIR de órgano
@@ -986,15 +1055,38 @@ function enableHoverHighlight() {
   //console.log("Hover highlight ACTIVADO (versión restauración directa)");
 }
 
+// ===========================================
+//   RESET DEL RECORRIDO DE ENDOSCOPIA
+// ===========================================
+function resetEndoscopy() {
+    if (XYZ.length === 0) return;
 
-function ListaAnimaciones() {
+    // Detener autoplay si estaba corriendo
+    if (autoRunning) {
+        toggleAutoEndoscopy("autoEndo");
+    }
 
-  apiRef.getAnimations(function(err, animations) {
-      if (!err) {
-          window.console.log(animations);
-      }
-  });
+    // Reiniciar índice
+    i = 1;
+
+    // Actualizar botón numérico
+    const counter = document.getElementById("keyI");
+    if (counter) counter.innerHTML = i;
+
+    // Asegurar orientación caudal
+    facing = "caudal";
+    document.getElementById("keyE1").style.display = "inline";
+    document.getElementById("keyE2").style.display = "none";
+
+    // Asegurar estado "inside" igual que cuando usamos flechas
+    inout = "in";
+    document.getElementById("keyF1").style.display = "none";
+    document.getElementById("keyF2").style.display = "inline";
+
+    // Colocar cámara en el punto 1
+    setCamera(i);
 }
+
 
 // FIN funciones propias
 //FIN Sketchfab
