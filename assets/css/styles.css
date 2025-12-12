@@ -1,7 +1,7 @@
 /*CSS de página inicio*/
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f9;
@@ -79,10 +79,13 @@ h2 {
 }
 
 footer {
-    text-align: center;
     padding: 2rem;
     background-color: #007b00;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 footer img {
@@ -96,5 +99,30 @@ footer .logo {
     display: block;
     margin: 0 auto 1rem;
 }
+.derechos {
+    font-size: small;
+}
+
+.ucm-firma {
+    display: flex;
+}
+
+.ucm-firma img {
+    border-right: solid white 1px;
+    padding-right: 10px;
+    margin-right: 10px;
+}
+
+.creative-commons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.creative-commons img {
+    height: 35px;
+}
+
 
 /*FIN CSS de página inicio*/
