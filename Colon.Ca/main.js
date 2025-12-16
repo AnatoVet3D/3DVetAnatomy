@@ -596,7 +596,7 @@ function goInside() {
   });
 }
 
-// //Función para ubicarse fuera  de un órgano donde haya puntos internos: aleja un poco la cámara manteniendo dirección
+// Función para ubicarse fuera  de un órgano donde haya puntos internos: aleja un poco la cámara manteniendo dirección
 function goOutside() {
 
   // Guardamos el último punto interno antes de salir
@@ -1008,13 +1008,7 @@ function limpiarNombre(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-
-
-
-
-
-
-
+// =======================================================
 //   ILUMINAR ÁREAS AL PASAR EL RATÓN
 // =======================================================
 

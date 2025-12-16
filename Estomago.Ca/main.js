@@ -12,22 +12,22 @@ const buttonF2 = document.getElementById('keyF2');
 const buttonG  = document.getElementById('keyG');
 const buttonI  = document.getElementById('keyI');
 const buttonH  = document.getElementById('keyH');
-//AutoPlay recorrido endoscopia
-document.getElementById("autoEndo").addEventListener("click", () => {
-  toggleAutoEndoscopy("autoEndo");
-});
+// //AutoPlay recorrido endoscopia
+// document.getElementById("autoEndo").addEventListener("click", () => {
+//   toggleAutoEndoscopy("autoEndo");
+// });
 
-// Slider funcional
-document.getElementById("speedSlider").addEventListener("input", function () {
-  const min = parseInt(this.min);
-  const max = parseInt(this.max);
-  const val = parseInt(this.value);
+// // Slider funcional
+// document.getElementById("speedSlider").addEventListener("input", function () {
+//   const min = parseInt(this.min);
+//   const max = parseInt(this.max);
+//   const val = parseInt(this.value);
 
-  // Inversión: si el slider está a la derecha, queremos velocidad alta (steps bajos)
-  splineSteps = max - (val - min);
+//   // Inversión: si el slider está a la derecha, queremos velocidad alta (steps bajos)
+//   splineSteps = max - (val - min);
 
-  //console.log("Nueva velocidad spline:", splineSteps);
-});
+//   //console.log("Nueva velocidad spline:", splineSteps);
+// });
 
 // Variables generales
 var directory = "../assets/img/endoscopia/estomago.Ca/"; // directorio con las imágenes
@@ -612,7 +612,6 @@ function animateSpline(i, callback = null) {
 
         // Punto interpolado en spline
         const pos = catmullRom(p0, p1, p2, p3, t);
-        lastCameraPos = pos;  // 🔥 GUARDAMOS LA POSICIÓN REAL
 
         // Punto ligeramente adelantado para "mirar"
         const posLook = catmullRom(p0, p1, p2, p3, Math.min(t + 0.02, 1));
@@ -721,43 +720,20 @@ function smoothMoveToStart(callback) {
 function toggleAutoEndoscopy(buttonId) {
   if (XYZ.length === 0) return; 
 
-  const btn = document.getElementById(buttonId);
+  const btn  = document.getElementById(buttonId);
   const icon = btn.querySelector("span");
 
   // Si ya está corriendo → parar
-if (autoRunning) {
+  if (autoRunning) {
     autoRunning = false;
 
+    // Cambiar icono a PLAY
     if (icon) icon.innerHTML = "play_circle";
-
-    // orientar suavemente hacia el siguiente punto
-    orientToNextPoint(i);
-
-
+    
     return;
-}
-
-  // Si el visor NO ha entrado aún al colon (i = 0),
-  // el autoplay saltaría feo → forzamos inicio en 1 sin mover cámara.
-  // Primera vez que entra → mover suavemente al punto 1
-  if (i === 0) {
-      i = 1;
-      const counter = document.getElementById("keyI");
-      if (counter) counter.innerHTML = i;
-
-      // Bloquear autoplay mientras se mueve al inicio
-      autoRunning = true;
-      icon.innerHTML = "pause_circle";
-
-      smoothMoveToStart(() => {
-          autoStep();   // cuando termina → empieza el recorrido normal
-      });
-
-      return; // importante: evitamos iniciar el autoplay dos veces
   }
 
-
-  // Iniciar autoplay
+  // Vamos a arrancar autoplay
   autoRunning = true;
 
   // Cambiar icono a PAUSE
@@ -770,7 +746,6 @@ if (autoRunning) {
 
   function autoStep() {
     if (XYZ.length === 0) return; 
-
     if (!autoRunning) return;
 
     if (facing === "caudal") {
@@ -783,7 +758,7 @@ if (autoRunning) {
         autoStep();
       });
 
-    } else {
+    } else { // facing rostral
 
       if (i <= 1) return toggleAutoEndoscopy(buttonId);
 
@@ -796,13 +771,30 @@ if (autoRunning) {
     }
   }
 
+  // -------- PRIMERA VEZ: i = 0 → entrar SUAVEMENTE al punto 1 --------
+  if (i === 0) {
+    i = 1;
+    const counter = document.getElementById("keyI");
+    if (counter) counter.innerHTML = i;
+
+    // Movimiento suave desde donde esté la cámara hasta el punto 1
+    smoothMoveToStart(() => {
+      // cuando termina la entrada suave → empezamos recorrido normal
+      if (autoRunning) autoStep();
+    });
+
+    return; // importantísimo para no llamar también a autoStep() justo debajo
+  }
+
+  // Si ya habíamos estado dentro (i > 0), arrancamos directamente el spline
   autoStep();
 }
+
 
 //Fin función autoPlay
 
 // =======================================================
-//   ILUMINAR ÁREAS AL PASAR EL RATÓN (tu función)
+//   ILUMINAR ÁREAS AL PASAR EL RATÓN
 // =======================================================
 function enableHoverHighlight() {
   if (!apiRef) {
@@ -829,4 +821,36 @@ function enableHoverHighlight() {
     y.channels.EmitColor.color = [0.5, 0.5, 0.0];
     apiRef.setMaterial(y, function () {});
   }, { pick: 'fast' });
+}
+
+// ===========================================
+//   RESET DEL RECORRIDO DE ENDOSCOPIA
+// ===========================================
+function resetEndoscopy() {
+    if (XYZ.length === 0) return;
+
+    // Detener autoplay si estaba corriendo
+    if (autoRunning) {
+        toggleAutoEndoscopy("autoEndo");
+    }
+
+    // Reiniciar índice
+    i = 1;
+
+    // Actualizar botón numérico
+    const counter = document.getElementById("keyI");
+    if (counter) counter.innerHTML = i;
+
+    // Asegurar orientación caudal
+    facing = "caudal";
+    document.getElementById("keyE1").style.display = "inline";
+    document.getElementById("keyE2").style.display = "none";
+
+    // Asegurar estado "inside" igual que cuando usamos flechas
+    inout = "in";
+    document.getElementById("keyF1").style.display = "none";
+    document.getElementById("keyF2").style.display = "inline";
+
+    // Colocar cámara en el punto 1
+    setCamera(i);
 }
