@@ -12,22 +12,22 @@ const buttonF2 = document.getElementById('keyF2');
 const buttonG  = document.getElementById('keyG');
 const buttonI  = document.getElementById('keyI');
 const buttonH  = document.getElementById('keyH');
-// //AutoPlay recorrido endoscopia
-// document.getElementById("autoEndo").addEventListener("click", () => {
-//   toggleAutoEndoscopy("autoEndo");
-// });
+//AutoPlay recorrido endoscopia
+document.getElementById("autoEndo").addEventListener("click", () => {
+  toggleAutoEndoscopy("autoEndo");
+});
 
-// // Slider funcional
-// document.getElementById("speedSlider").addEventListener("input", function () {
-//   const min = parseInt(this.min);
-//   const max = parseInt(this.max);
-//   const val = parseInt(this.value);
+// Slider funcional
+document.getElementById("speedSlider").addEventListener("input", function () {
+  const min = parseInt(this.min);
+  const max = parseInt(this.max);
+  const val = parseInt(this.value);
 
-//   // Inversión: si el slider está a la derecha, queremos velocidad alta (steps bajos)
-//   splineSteps = max - (val - min);
+  // Inversión: si el slider está a la derecha, queremos velocidad alta (steps bajos)
+  splineSteps = max - (val - min);
 
-//   //console.log("Nueva velocidad spline:", splineSteps);
-// });
+  //console.log("Nueva velocidad spline:", splineSteps);
+});
 
 // Variables generales
 var directory = "../assets/img/endoscopia/estomago.Ca/"; // directorio con las imágenes
@@ -47,6 +47,10 @@ var filename0  = "";         // último fichero de imagen mostrado
 let autoRunning = false;
 let autoPlay = null;
 let lastCameraPos = null;   // posición real durante el spline
+let splineAbortToken = 0;     // para cortar un tramo en marcha
+let lastSplineT = 0;          // t actual del tramo (0..1)
+let lastSplineIndex = 0;      // el i del tramo que se está animando
+
 
 
 /* Velocidad del autoplay */
@@ -391,6 +395,18 @@ function setFacingCaudal() {
 function goInside() {
   if (!apiRef) return;
 
+  // ✅ Si ya estábamos dentro alguna vez (i>0) y tenemos memoria, volvemos ahí
+  if (i > 0 && lastInsideIndex != null) {
+    i = lastInsideIndex;
+    buttonI.innerHTML = i;
+    setCamera(i);
+
+    document.getElementById("keyF1").style.display = "none";
+    document.getElementById("keyF2").style.display = "inline";
+    inout = "in";
+    return;
+  }
+
   apiRef.getCameraLookAt(function (err, camera) {
     if (err) return;
 
@@ -436,6 +452,9 @@ function goInside() {
 function goOutside() {
   if (!apiRef) return;
 
+  // Guardar el último punto "válido dentro"
+  if (i > 0) lastInsideIndex = i;
+
   apiRef.getCameraLookAt(function (err, camera) {
     if (err) return;
 
@@ -466,6 +485,8 @@ function moveEndoBackward() {
   // Reposicionar cámara
   setCamera(i);
 
+  lastInsideIndex = i;
+
   // Ajustar botones
   document.getElementById("keyF1").style.display = "none";
   document.getElementById("keyF2").style.display = "inline";
@@ -487,6 +508,8 @@ function moveEndoForward() {
 
   // Reposicionar cámara
   setCamera(i);
+
+  lastInsideIndex = i;
 
   // Ajustar botones de estado
   document.getElementById("keyF1").style.display = "none";
@@ -590,47 +613,64 @@ function catmullRom(p0, p1, p2, p3, t) {
 }
 //FIN
 
+function snapToIndex(iIndex) {
+  // asegura que el snap final usa EXACTAMENTE la misma lógica que el modo manual
+  setCamera(iIndex);
+}
+
+
 //   INTERPOLACIÓN SUAVE ENTRE PUNTOS XYZ
 // =====================================================
 
 function animateSpline(i, callback = null) {
-    let steps = splineSteps;
-    let t = 0;
+  let steps = splineSteps;
+  let t = 0;
 
-    // Seguridad de bordes
-    if (i < 1) i = 1;
-    if (i > N - 3) i = N - 3;
+  // Seguridad de bordes
+  if (i < 1) i = 1;
+  if (i > N - 3) i = N - 3;
 
-    const p0 = XYZ[i - 1];
-    const p1 = XYZ[i];
-    const p2 = XYZ[i + 1];
-    const p3 = XYZ[i + 2];
+  // Guardamos qué tramo estamos recorriendo
+  lastSplineIndex = i;
 
-    function frame() {
-        t += 1/steps;
-        if (t > 1) t = 1;
+  // Token local para poder abortar este tramo
+  const myToken = splineAbortToken;
 
-        // Punto interpolado en spline
-        const pos = catmullRom(p0, p1, p2, p3, t);
+  const p0 = XYZ[i - 1];
+  const p1 = XYZ[i];
+  const p2 = XYZ[i + 1];
+  const p3 = XYZ[i + 2];
 
-        // Punto ligeramente adelantado para "mirar"
-        const posLook = catmullRom(p0, p1, p2, p3, Math.min(t + 0.02, 1));
+  function frame() {
+    // Si alguien pausó y cambió el token → cortamos YA
+    if (myToken !== splineAbortToken) return;
 
-        apiRef.setCameraLookAt(
-            [pos[0] * UNIT_FIX, pos[1] * UNIT_FIX, pos[2] * UNIT_FIX],
-            [posLook[0] * UNIT_FIX, posLook[1] * UNIT_FIX, posLook[2] * UNIT_FIX],
-            0.0
-        );
+    t += 1 / steps;
+    if (t > 1) t = 1;
 
-        if (t < 1) {
-            requestAnimationFrame(frame);
-        } else if (callback) {
-            callback();
-        }
+    lastSplineT = t;
+
+    const pos = catmullRom(p0, p1, p2, p3, t);
+    const posLook = catmullRom(p0, p1, p2, p3, Math.min(t + 0.02, 1));
+
+    const camPos  = [pos[0] * UNIT_FIX, pos[1] * UNIT_FIX, pos[2] * UNIT_FIX];
+    const camLook = [posLook[0] * UNIT_FIX, posLook[1] * UNIT_FIX, posLook[2] * UNIT_FIX];
+
+    // GUARDAMOS posición REAL (entre N y N+1)
+    lastCameraPos = camPos;
+
+    apiRef.setCameraLookAt(camPos, camLook, 0.0);
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else if (callback) {
+      callback();
     }
+  }
 
-    frame();
+  frame();
 }
+
 // FIN INTERPOLACION
 
 function orientToNextPoint() {
@@ -726,12 +766,29 @@ function toggleAutoEndoscopy(buttonId) {
   // Si ya está corriendo → parar
   if (autoRunning) {
     autoRunning = false;
-
-    // Cambiar icono a PLAY
     if (icon) icon.innerHTML = "play_circle";
-    
+
+    // Abortamos el tramo actual (corta el requestAnimationFrame)
+    splineAbortToken++;
+
+    // Queremos quedarnos DONDE ÍBAMOS (lastCameraPos) mirando a N+1
+    if (apiRef && lastCameraPos) {
+      const nextIndex = (facing === "caudal")
+        ? Math.min(i + 1, N - 1)
+        : Math.max(i - 1, 0);
+
+      const nextPos = XYZ[nextIndex];
+
+      apiRef.setCameraLookAt(
+        lastCameraPos, // posición entre N y N+1
+        nextPos,       // mirar a N+1 (o N-1 si rostral)
+        0.0
+      );
+    }
+
     return;
   }
+
 
   // Vamos a arrancar autoplay
   autoRunning = true;
@@ -759,16 +816,15 @@ function toggleAutoEndoscopy(buttonId) {
       });
 
     } else { // facing rostral
-
       if (i <= 1) return toggleAutoEndoscopy(buttonId);
 
       animateSpline(i, () => {
-        i++;
+        i--;                 // <-- en rostral baja
         keyI.innerHTML = i;
         autoStep();
       });
-
     }
+
   }
 
   // -------- PRIMERA VEZ: i = 0 → entrar SUAVEMENTE al punto 1 --------
