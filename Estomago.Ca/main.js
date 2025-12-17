@@ -395,7 +395,7 @@ function setFacingCaudal() {
 function goInside() {
   if (!apiRef) return;
 
-  // ✅ Si ya estábamos dentro alguna vez (i>0) y tenemos memoria, volvemos ahí
+  // Si ya estábamos dentro alguna vez (i>0) y tenemos memoria, volvemos ahí
   if (i > 0 && lastInsideIndex != null) {
     i = lastInsideIndex;
     buttonI.innerHTML = i;
