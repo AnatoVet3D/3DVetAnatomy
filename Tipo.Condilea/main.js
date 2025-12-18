@@ -3,6 +3,15 @@ const model = '5eb1516e6b3d4d2689aabaea269eff88'; // Modelo de referencia a Sket
 const filteredNodes = {}; // Objeto para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
 let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
 
+// Array para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
+const nodeNames = [];
+
+// Lista de nodos que quieres ocultar al cargar
+const nodosInicialmenteOcultos = [
+  "Plano_Medio",
+  "Text_PlanoMedio",
+];
+
 //INICIO Sketchfab
 //Asi se llama a la versión de api que esté actualmente
 iframe = document.getElementById('api-frame');
@@ -31,6 +40,14 @@ error = function () {
             };
           };
         };
+        
+        // Ocultar nodos especificados al inicio
+        nodosInicialmenteOcultos.forEach((nombreNodo) => {
+          if (filteredNodes[nombreNodo]) {
+            filteredNodes[nombreNodo].show = false;
+            apiRef.hide(filteredNodes[nombreNodo].instanceId);
+          }
+        });
 
         //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
         for (let i = 0; i < 4; i++) { // R: Según el nº de anotaciones modificar el último número
@@ -75,19 +92,53 @@ function showInfo(){
 }
 //FIN VENTANA DE INFO
 
-//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
-function showAndHide(nodeName, buttonId) {
+// Muestra/oculta uno o varios nodos y actualiza el estado visual del botón
+function showAndHide(nodeNameOrList, buttonId) {
   const btn = document.getElementById(buttonId);
-  filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
-  //console.log(filteredNodes); //R: esto sólo se descomenta, y se comenta lo de arriba para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
-  if (filteredNodes[nodeName].show) {
-    btn.classList.replace("hideButton", "showButton");
-    apiRef.show(filteredNodes[nodeName].instanceId)
+
+  // Acepta string o array
+  const nodeNames = Array.isArray(nodeNameOrList)? nodeNameOrList : [nodeNameOrList];
+
+  // Estado objetivo (basado en el primer nodo)
+  const nextShowState = !filteredNodes[nodeNames[0]].show;
+
+  // Mostrar / ocultar nodos
+  nodeNames.forEach((nodeName) => {
+    if (!filteredNodes[nodeName]) return;
+
+    filteredNodes[nodeName].show = nextShowState;
+
+    if (nextShowState) {
+      apiRef.show(filteredNodes[nodeName].instanceId);
+    } else {
+      apiRef.hide(filteredNodes[nodeName].instanceId);
+    }
+  });
+
+  // Detectar tipo de botón por clase base
+  let showClass, hideClass;
+
+  if (btn.classList.contains("symbols")) {
+    showClass = "showSymbol";
+    hideClass = "hideSymbol";
+  } else if (btn.classList.contains("hideKey") || btn.classList.contains("showKey")) {
+    showClass = "showKey";
+    hideClass = "hideKey";
   } else {
-    btn.classList.replace("showButton", "hideButton");
-    apiRef.hide(filteredNodes[nodeName].instanceId)
-  };
-};
+    showClass = "showButton";
+    hideClass = "hideButton";
+  }
+
+  // Aplicar estado visual
+  if (nextShowState) {
+    btn.classList.remove(hideClass);
+    btn.classList.add(showClass);
+  } else {
+    btn.classList.remove(showClass);
+    btn.classList.add(hideClass);
+  }
+}
+
 
 //Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga pestaña "Exploración"
 let showToolTip = false;

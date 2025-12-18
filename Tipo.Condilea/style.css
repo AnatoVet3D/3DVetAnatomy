@@ -97,6 +97,24 @@ button {
   width: 32%;
 }
 
+.hideSymbols{
+  background: #888888;
+  width: 32%;
+}
+
+.topRow{
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+.topRow button{
+  display: inline-flex; /* para que no se apilen */
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 /*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
 button:hover {
   opacity: 1;
@@ -104,8 +122,4 @@ button:hover {
 
 button:active {
   font-weight: bold;
-}
-
-#key1{
-  margin-bottom: 6px;
 }

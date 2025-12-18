@@ -19,8 +19,12 @@
     <div class="img-container1"> <!-- Si logo encima de letras -->
       <img src="../assets/img/boton-vet-ucm.png">
     </div>
+    
+    <div class="topRow">
+      <button class="symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
+      <button class="hideKey" id="key1" onclick="showAndHide(['Plano_Medio','Text_PlanoMedio'], 'key1')"><span class="material-symbols-outlined">split_scene_left</span></button>
+    </div>
 
-    <br><button class= "symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
     <button class="showButton" id="keyA" onclick="showAndHide('Condilea_Fija', 'keyA')">Condilea fija</button> <!-- Nombre del botón -->
     <button class="showButton" id="keyH" onclick="showAndHide('Condilea_Movil', 'keyH')">Condilea móvil</button>
 

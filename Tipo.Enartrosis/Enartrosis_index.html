@@ -20,7 +20,10 @@
       <img src="../assets/img/boton-vet-ucm.png">
     </div>
 
-    <br><button class= "symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
+    <div class="topRow">
+      <button class="symbols" id="buttonC" onclick="showInfo()"><span class="material-symbols-outlined">info</span></button>
+      <button class="hideKey" id="key1" onclick="showAndHide(['Plano_Medio','Text_PlanoMedio'], 'key1')"><span class="material-symbols-outlined">split_scene_left</span></button>
+    </div>
     <button class="showButton" id="keyA" onclick="showAndHide('Enartrosis_Fija', 'keyA')">Enartrosis fija</button> <!-- Nombre del botón -->
     <button class="showButton" id="keyH" onclick="showAndHide('Enartrosis_Movil', 'keyH')">Enartrosis móvil</button>
 
