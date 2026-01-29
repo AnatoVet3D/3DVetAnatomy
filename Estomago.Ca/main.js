@@ -257,7 +257,7 @@ function bindUIEvents() {
 
   // Instrucciones
   if (buttonD) {
-    buttonD.addEventListener('click', toggleInstructions);
+    buttonD.addEventListener('click', showInfo);
   }
 
   // Facing rostral / caudal
@@ -288,6 +288,34 @@ function bindUIEvents() {
 // ============================
 //   FUNCIONES DE VISOR
 // ============================
+
+//   VENTANA DE INFO
+// =====================================================
+//Abre una ventana con informacion de uso del visor
+function showInfo() {
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+
+  document.addEventListener("keydown", infoModalEscClose);
+}
+
+function closeInfoModal() {
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  document.removeEventListener("keydown", infoModalEscClose);
+}
+
+function infoModalEscClose(e) {
+  if (e.key === "Escape") closeInfoModal();
+}
+// FIN VENTANA DE INFO
 
 // ON/OFF mitad izquierda (IntestinoL, TargetsL, FlechasL)
 function toggleLeftSide() {
@@ -352,26 +380,6 @@ function togglePictures() {
       if (leftSide  == "visible") { apiRef.show(node_TargetsR); }
       if (rightSide == "visible") { apiRef.show(node_TargetsL); }
       break;
-  }
-}
-
-// Muestra/oculta la imagen de instrucciones
-function toggleInstructions() {
-  const label  = document.getElementById("label1");
-  const img    = document.getElementById("image1");
-  const filename = directory + "instrucciones.png";
-
-  // mismo comportamiento que el original
-  if (filename !== filename0) {
-    if (label) label.style.display = "none";
-    textlabel0 = "";
-    img.src = filename;
-    img.style.width = "700px";
-    img.style.display = "block";
-    filename0 = filename;
-  } else {
-    img.style.display = "none";
-    filename0 = "";
   }
 }
 

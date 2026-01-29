@@ -129,20 +129,34 @@ client.init(model, {
 // Funciones Propias
 //creadas para solo tener que llamarlas desde el .HTML
 
+//   VENTANA DE INFO
+// =====================================================
 //Abre una ventana con informacion de uso del visor
-function showInfo() {
-  alert("Información de uso\n\n" +
-    "- Botózn izquierdo: gira el modelo\n" +
-    "- Botón central: desplaza el modelo\n" +
-    "- Girar rueda: zoom\n" +
-    "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
-    "- Clic en calavera: muestra/oculta cráneo de équido de referencia\n" +
-    "- Clic en nota: muestra/oculta anotaciones\n" +
-    "- Clic en plano horizontal: muestra/oculta plano rostral del modelo\n" +
-    "- Clic en plano lateral: muestra/oculta plano parasagital del modelo\n" +
-    "- Opciones del menú: encienden/apagan un órgano o grupo de órganos"
-  );
+function showInfo(){
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+
+  // Cerrar con ESC
+  document.addEventListener("keydown", infoModalEscClose);
 }
+
+function closeInfoModal() {
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  document.removeEventListener("keydown", infoModalEscClose);
+}
+
+function infoModalEscClose(e) {
+  if (e.key === "Escape") closeInfoModal();
+}
+//FIN VENTANA DE INFO
 
 //Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(nodeName, buttonId = null) {

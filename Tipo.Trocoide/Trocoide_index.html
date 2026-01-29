@@ -36,6 +36,28 @@
     </div>
   </div>
   
+  <!-- Modal: Información / Instrucciones -->
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeInfoModal()"></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal__header">
+        <div id="infoModalTitle" class="modal__title">Generalidades artrología · Guía rápida</div>
+      </div>
+
+        <div class="modal__content">
+          <h3>Anotación</h3>
+          <p>
+            En la parte inferior están las opciones de reproducción y animaciones.
+          </p>
+        </div>
+
+          <div class="modal__footer">
+            <button class="modal__btn" onclick="closeInfoModal()">Cerrar</button>
+          </div>
+        </div>
+      </div>
+  
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
   <script src="main.js"></script>
 </body>

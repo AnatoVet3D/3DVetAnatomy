@@ -22,9 +22,14 @@ document.getElementById("speedSlider").addEventListener("input", function () {
   //console.log("Nueva velocidad spline:", splineSteps);
 });
 
+// Enlaza botón fotos
+document.getElementById("keyC").addEventListener("click", togglePhotosMode);
+
 
 
 // Variables
+var directory = "../assets/img/endoscopia/colon.Ca/"; // directorio con las imágenes
+
 var textlabel0 = "";       // registro con la etiqueta de la parte de intestino seleccionada
 
 var CiegoSide = "visible";  // on/off para el botón que apaga la zona de ciego y demás (NO APAGAR)
@@ -32,6 +37,34 @@ var RestoSide = "visible"; // on/off para el botón que apaga el resto de colon 
 var facing = "caudal";     // dirección caudal/rostral de la vista desplazandose dentro del intestino
 var infoOnOff = "off";     // on/off del cuadro de instrucciones
 var inout = "out";         // in/out para el botón que desplaza hacia el interior o exterior del intestino
+
+// --- Modo fotos (photo_camera) ---
+let photosMode = "off";         // "on" | "off"
+let filename0 = "";             // última imagen mostrada (para toggle al reclicar)
+const listedPhotoNodes = {};    // instanceID -> filename (solo nodos FotoX.*)
+const photoNodeIds = [];        // lista de instanceIDs para show/hide rápido
+
+// Nombre fotos reales (tal cual están escritas)
+const photoFilesByIndex = {
+  0: "0-Ileon.jpg",
+  1: "1-Colon ascendente y Válvulas.jpg",
+  2: "2-1era flexura colonica.jpg",
+  3: "3-Colon transverso.jpg",
+  4: "4-2a flexura colonica.jpg",
+  5: "5-Colon descendente.jpg",
+  6: "6-Recto.jpg"
+};
+
+// Para Modo transparencia de una malla
+let xrayOn = false;
+let xrayOriginalMaterial = null; // copia del material original
+
+
+// Helper: construye una URL segura aunque haya espacios/tildes
+function buildPhotoSrc(dir, file) {
+  // OJO: encodeURIComponent para que " " y "á" no rompan la ruta
+  return dir + encodeURIComponent(file);
+}
 
 let autoPlay = null;     // interval del recorrido
 let autoRunning = false; // estado del botón único
@@ -136,12 +169,42 @@ success = function( api ) {
                 show: true,
                 instanceId: nodes[prop].instanceID
               };
+              // Registro de nodos fotos
+              // Detectar nodos tipo: Foto0.Ileon, Foto1.CAscendente, ...
+              const m = name.match(/^Foto(\d+)\./i);
+              if (m) {
+                const idx = parseInt(m[1], 10);
+                const file = photoFilesByIndex[idx];
+
+                if (file) {
+                  const instId = nodes[prop].instanceID;
+                  listedPhotoNodes[instId] = file;
+                  photoNodeIds.push(instId);
+
+                  // Por defecto, ocultos (solo se ven si activas modo fotos)
+                  api.hide(instId);
+                }
+              }
 
           }
         }
 
       }
     });
+
+    // Estado inicial XRay al cargar
+    xrayOn = false;
+    updateXrayButtonUI();
+
+
+    //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
+    for (let i = 0; i < 5; i++) { // R: Según el nº de anotaciones modificar el último número
+      apiRef.hideAnnotation(i, function (err, index) {
+        if (!err) {
+          //window.console.log('Hiding annotation', index + 1);
+        }
+      });
+    }
 
     // Guardar cámara inicial solo una vez, y con retardo para que Sketchfab la estabilice - Util para la función de highlightView
     api.addEventListener("camerastop", () => {
@@ -159,14 +222,45 @@ success = function( api ) {
         }
     });
 
-
-
     // muestra/apaga la etiqueta/imagen correspondiente, cuando se clica sobre una parte sensible del intestino, una flecha o un target
     // NECESARIO que esté en la api porque se clicka sobre ella no sobre un botón posterior
     api.addEventListener('click', function(info) {
       const name = limpiarNombre(listedNodes[info.instanceID]?.name || '') ;
       //console.log(filteredNodes);
-      
+      const id = info.instanceID;
+
+        // Si estamos en modo fotos y el nodo clicado es uno de FotoX.* -> mostrar imagen
+        if (photosMode === "on" && listedPhotoNodes[id]) {
+          // ocultar label normal
+          document.getElementById("label1").style.display = "none";
+          textlabel0 = "";
+
+          const file = listedPhotoNodes[id];
+          const src = buildPhotoSrc(directory, file);
+
+          const lbl = document.getElementById("label2");
+          const img = document.getElementById("image2");
+
+          // Título (si no quieres mapping extra, usamos el nombre del archivo sin extensión)
+          const title = limpiarNombre(file); // quita ".jpg"
+          lbl.innerHTML = title;
+          lbl.style.display = "block";
+
+          // Toggle: si clicas el mismo, se cierra
+          if (filename0 === src) {
+            lbl.style.display = "none";
+            img.style.display = "none";
+            filename0 = "";
+          } else {
+            img.src = src;
+            img.style.display = "block";
+            filename0 = src;
+          }
+
+          return;
+        }
+
+
         if (info.instanceID == null) {
           document.getElementById("label1").style.display = "none";
           textlabel0 = "";
@@ -211,19 +305,83 @@ client.init( model, {
 // =====================================================
 //Abre una ventana con informacion de uso del visor
 function showInfo(){
-    alert("Información de uso\n\n" +
-    "- Botón izquierdo: gira el modelo\n" +
-    "- Botón central: desplaza el modelo en un plano\n" +
-    "- Girar rueda: zoom\n" +
-    "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
-    "- Clic en focus: muestra/oculta área de papilas\n" +
-    "- Clic en rotación: orienta la vista direción caudal o craneal dentro del órgano\n" +
-    "- Clic en recuadro flecha: despalza la vista hacia el exterior/interior del órgano\n" +
-    "- Clic en doble flecha: desplaza la vista endoscópica hacia caudal o craneal dentro del órgano\n" +
-    "- Recuadro con número: indica la posición en el recorrido de la endoscopia dentro del órgano"
-  );
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+
+  // Cerrar con ESC
+  document.addEventListener("keydown", infoModalEscClose);
+}
+
+function closeInfoModal() {
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  document.removeEventListener("keydown", infoModalEscClose);
+}
+
+function infoModalEscClose(e) {
+  if (e.key === "Escape") closeInfoModal();
 }
 //FIN VENTANA DE INFO
+
+//   MOSTRAR FOTOS REALES DE ENDOSCOPIA
+// =====================================================
+function togglePhotosMode() {
+  if (!apiRef) return;
+
+  const btn = document.getElementById("keyC");
+
+  if (photosMode === "on") {
+    photosMode = "off";
+    if (btn) btn.classList.remove("toggle-active");
+
+    // Ocultar nodos FotoX.*
+    photoNodeIds.forEach(id => apiRef.hide(id));
+
+    // Cerrar imagen si estaba abierta
+    document.getElementById("label2").style.display = "none";
+    document.getElementById("image2").style.display = "none";
+    filename0 = "";
+
+    // Ocultar botón de anotaciones cuando se sale del modo fotos
+    const toolBtn = document.getElementById("key1");
+    if (toolBtn) toolBtn.style.visibility  = "hidden";
+    toolBtn.style.pointerEvents = "none";
+
+
+    // si las anotaciones estaban activas, se apagan
+    if (showToolTip) {
+      toogleToolTips(); // deja el estado coherente + cambia el color del botón
+    }
+
+    return;
+  }
+
+  // Encender
+  photosMode = "on";
+  if (btn) btn.classList.add("toggle-active");
+  
+  // Mostrar botón de anotaciones solo en modo fotos
+  const toolBtn = document.getElementById("key1");
+  if (toolBtn) toolBtn.style.visibility  = "visible";
+  toolBtn.style.pointerEvents = "auto";
+
+  // Asegurar estado visual inicial (gris)
+  toolBtn.classList.remove("showKey");
+  toolBtn.classList.add("hideKey");
+
+
+
+  // Mostrar nodos FotoX.*
+  photoNodeIds.forEach(id => apiRef.show(id));
+}
+//FIN MODO FOTOS
 
 //   RECORRIDO CÁMARA PARA ENDOSCOPIA
 // =====================================================
@@ -805,28 +963,155 @@ function showAndHide(nodeName, buttonId = null) {
   };
 };
 
+//   VENTANA DE ANATOMÍA
+// =====================================================
+//Abre una ventana con informacion de anatomía
+function openAnatomySheet() {
+  const sheet = document.getElementById("anatomySheet");
+  if (!sheet) return;
+
+  sheet.classList.add("is-open");
+  sheet.setAttribute("aria-hidden", "false");
+  document.addEventListener("keydown", anatomySheetEscClose);
+}
+
+function closeAnatomySheet() {
+  const sheet = document.getElementById("anatomySheet");
+  if (!sheet) return;
+
+  sheet.classList.remove("is-open");
+  sheet.setAttribute("aria-hidden", "true");
+  document.removeEventListener("keydown", anatomySheetEscClose);
+}
+
+function anatomySheetEscClose(e) {
+  if (e.key === "Escape") closeAnatomySheet();
+}
+//FIN VENTANA DE ANATOMÍA
+
+
+function onKey1Click() {
+  const wasOn = showToolTip;   // estado ANTES
+
+  toogleToolTips();            // alterna estado
+
+  // Si antes estaba apagado, ahora está encendido -> abrir sheet
+  if (!wasOn) {
+    openAnatomySheet();
+  }
+}
+
+
+//   MODO RAYOS X EN PIEL
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function setOpacity(mat, alpha01) {
+  // Opción A: canal Opacity
+  if (mat.channels && mat.channels.Opacity) {
+    mat.channels.Opacity.enable = true;
+    mat.channels.Opacity.factor = alpha01; // 0..1
+    return true;
+  }
+
+  // Opción B: alpha en AlbedoPBR.color (RGBA)
+  if (mat.channels && mat.channels.AlbedoPBR && Array.isArray(mat.channels.AlbedoPBR.color)) {
+    const c = mat.channels.AlbedoPBR.color;
+    if (c.length === 3) mat.channels.AlbedoPBR.color = [c[0], c[1], c[2], alpha01];
+    else mat.channels.AlbedoPBR.color[3] = alpha01;
+    return true;
+  }
+
+  return false;
+}
+
+function updateXrayButtonUI() {
+  const btn = document.getElementById("keyX");
+  if (!btn) return;
+
+  const icon = btn.querySelector("span.material-symbols-outlined");
+  if (!icon) return;
+
+  if (xrayOn) {
+    btn.classList.remove("xray-off");
+    btn.classList.add("xray-on");
+    icon.textContent = "visibility";
+  } else {
+    btn.classList.remove("xray-on");
+    btn.classList.add("xray-off");
+    icon.textContent = "visibility_off";
+  }
+}
+
+// MODO REDUCCION OPACIDAD EN PIEL
+function toggleXrayPiel(alpha = 0.22) {
+  if (!apiRef) return;
+
+  xrayOn = !xrayOn;
+
+  updateXrayButtonUI();
+
+  apiRef.getMaterialList((err, mats) => {
+    if (err || !mats) return;
+
+    // Buscar el material por nombre
+    const mat = mats.find(m => m.name === "Material.014");
+    if (!mat) {
+      console.warn("No encuentro el material 'Material.014' en Sketchfab. Mira nombres con getMaterialList().");
+      xrayOn = !xrayOn;
+      updateXrayButtonUI();
+      return;
+    }
+
+    // Guardar el original una sola vez
+    if (!xrayOriginalMaterial) xrayOriginalMaterial = clone(mat);
+
+    const updated = clone(mat);
+
+    if (xrayOn) {
+      const ok = setOpacity(updated, alpha);
+      updateXrayButtonUI();
+      if (!ok) {
+        console.warn("No pude aplicar opacidad: el material no tiene Opacity ni AlbedoPBR.color usable.");
+        xrayOn = !xrayOn;
+        return;
+      }
+    } else {
+      updateXrayButtonUI();
+      // Restaurar exactamente como estaba
+      Object.assign(updated, clone(xrayOriginalMaterial));
+    }
+
+    apiRef.setMaterial(updated);
+  });
+}
+
+
 //Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga una pestaña Ej: "Exploración" en abdomen.Ca
 let showToolTip=false;
-function toogleToolTips(){
-if (showToolTip){
-  for (let i = 0; i<8; i++){
-    apiRef.hideAnnotation(i, function(err, index) {
-      if (!err) {
-          //window.console.log('Hiding annotation', index + 1);
-      }
-  });
+function toogleToolTips() {
+  if (showToolTip) {
+    for (let i = 0; i < 9; i++) { // R: Según el nº de anotaciones modificar el último número
+      apiRef.hideAnnotation(i, function (err, index) {
+      });
+    }
+  } else {
+    for (let i = 0; i < 9; i++) { // R: Según el nº de anotaciones modificar el último número
+      apiRef.showAnnotation(i, function (err, index) {
+      });
+    }
   }
-} else {
-  for (let i = 0; i<8; i++){
-    apiRef.showAnnotation(i, function(err, index) {
-      if (!err) {
-          //window.console.log('Showing annotation', index + 1);
-      }
-  });
-}
-}
-showToolTip=!showToolTip
-}
+  const btn = document.getElementById("key1");
+  if (!showToolTip) {
+    btn.classList.replace("hideKey", "showKey");
+  } else {
+    btn.classList.replace("showKey", "hideKey");
+  };
+  showToolTip = !showToolTip
+};
+
+
 
 //Para buscar nodes con siglas/palabras en común
 function findNodeGroups(code) {
@@ -954,6 +1239,23 @@ function showGroup(groupId) {
 // Función para aprovechar lo escrito en el nombre de cada pieza del modelo.
 function limpiarNombre(str) {
 
+  // Quitar extensión de archivo (.jpg, .png, etc.)
+  str = str.replace(/\.[a-z0-9]+$/i, "");
+
+  // ----------------------------------------
+  // 0) NORMALIZACIÓN ESPECÍFICA (fotos, títulos)
+  // ----------------------------------------
+
+  // Quitar prefijo número + guion (ej: "2-")
+  str = str.replace(/^\d+\s*-\s*/, "");
+
+  // Convertir ordinales ANTES de eliminar dígitos
+  str = str
+    .replace(/1era\b/gi, "1ª")
+    .replace(/2a\b/gi, "2ª")
+    .replace(/3a\b/gi, "3ª")
+    .replace(/1er\b/gi, "1º");
+
   // ----------------------------------------
   // 1) Reparación anatómica de nombres rotos
   // ----------------------------------------
@@ -964,7 +1266,9 @@ function limpiarNombre(str) {
   const fixes = [
     { regex: /esf��nter|esf�nter|esfï¿½ï¿½nter|esfï¿½nter|esfinter/i, replace: "esfínter" },
     { regex: /c��lica|c�lica|cï¿½ï¿½lica|cï¿½lica|colica/i, replace: "cólica" },
+    { regex: /col��nica|col�nica|colï¿½ï¿½nica|colï¿½lnica|colonica/i, replace: "colónica" },
     { regex: /cecoc��lico|cecoc�lico|cecocï¿½ï¿½lico|cecocï¿½lico|cecocolico/i, replace: "cecocólico" },
+    { regex: /v��lvula|v�lvula|vï¿½ï¿½lvula|vï¿½lvula|valvula/i, replace: "válvula" },
     { regex: /ileon|ï¿½leon|��leon|�leon/i, replace: "íleon" },
     { regex: /ileo|ï¿½leo|��leo|�leo/i, replace: "íleo" },
     { regex: /gastr�|g��strico|g�strico/i, replace: "gástrico" }
@@ -985,7 +1289,7 @@ function limpiarNombre(str) {
     .replace(/material/gi, "")
 
     // Eliminar puntos y números (".001", ".002", etc.)
-    .replace(/[.\d]/g, "")
+    .replace(/[.\d](?!ª|º)/g, "")
 
     // Eliminar guiones bajos al inicio o final
     .replace(/^_+|_+$/g, "")

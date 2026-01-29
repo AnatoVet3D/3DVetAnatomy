@@ -86,9 +86,28 @@ client.init(model, {
 // =====================================================
 //Abre una ventana con informacion de uso del visor
 function showInfo(){
-    alert("Información de uso:\n\n" +
-    "En la parte inferior están las opciones de reproducción y animaciones\n"
-  );
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+
+  // Cerrar con ESC
+  document.addEventListener("keydown", infoModalEscClose);
+}
+
+function closeInfoModal() {
+  const modal = document.getElementById("infoModal");
+  if (!modal) return;
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  document.removeEventListener("keydown", infoModalEscClose);
+}
+
+function infoModalEscClose(e) {
+  if (e.key === "Escape") closeInfoModal();
 }
 //FIN VENTANA DE INFO
 

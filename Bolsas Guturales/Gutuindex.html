@@ -58,6 +58,36 @@
     </div>
   </div>
 
+  
+  <!-- Modal: Información / Instrucciones -->
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeInfoModal()"></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal__header">
+        <div id="infoModalTitle" class="modal__title">Bolsas Guturales y senos paranasales equinos · Guía rápida</div>
+      </div>
+
+        <div class="modal__content">
+          <h3>Controles de navegación</h3>
+          <ul class="modal__list">
+            <li><span class="material-symbols-outlined">left_click</span> Botón izquierdo: girar el modelo</li>
+            <li><span class="material-symbols-outlined">pan_tool</span> Botón derecho/Botón central: desplazar en plano</li>
+            <li><span class="material-symbols-outlined">attractions</span> Rueda: zoom</li>
+            <li><span class="material-symbols-outlined">skull</span> Mostrar/ocultar calavera</li>
+            <li><span class="material-symbols-outlined">split_scene_down</span> Mostrar/ocultar corte craneal</li>
+            <li><span class="material-symbols-outlined">split_scene_left</span> Mostrar/ocultar corte parasagital</li>
+          </ul>
+        </div>
+
+        <div class="modal__footer">
+          <button class="modal__btn" onclick="closeInfoModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+
+
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
   <script src="main.js"></script>
 </body>
