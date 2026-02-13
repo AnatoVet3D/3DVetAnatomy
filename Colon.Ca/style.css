@@ -138,8 +138,8 @@ button.toggle-active {
 }
 
 #key1{
-  visibility: hidden;
-  pointer-events: none; /* no se puede clicar */
+  /* visibility: hidden;
+  pointer-events: none;*/ /*no se puede clicar */
   width: 32%;
   margin-bottom: 6px;
 }

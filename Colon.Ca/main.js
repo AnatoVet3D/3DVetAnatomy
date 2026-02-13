@@ -2,9 +2,6 @@ var model = '047f7992fa7242f685d2b0f9d691da99'; // Modelo de referencia a Sketch
 
 // Buttons
 
-//buttonC = document.getElementById( 'keyC' ); // Esto estudiarlo si metemos imagenes de endoscopia
-// buttonD = document.getElementById( 'keyD' ); // ESTO ES PARA INFO PERO EN FOTO
-
 //AutoPlay recorrido endoscopia
 document.getElementById("autoEndo").addEventListener("click", () => {
   toggleAutoEndoscopy("autoEndo");
@@ -198,7 +195,7 @@ success = function( api ) {
 
 
     //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
-    for (let i = 0; i < 7; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 9; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.hideAnnotation(i, function (err, index) {
         if (!err) {
           //window.console.log('Hiding annotation', index + 1);
@@ -352,16 +349,18 @@ function togglePhotosMode() {
     document.getElementById("image2").style.display = "none";
     filename0 = "";
 
-    // Ocultar botón de anotaciones cuando se sale del modo fotos
-    const toolBtn = document.getElementById("key1");
-    if (toolBtn) toolBtn.style.visibility  = "hidden";
-    toolBtn.style.pointerEvents = "none";
+    applyAnnotationsVisibility();
+
+    // // Ocultar botón de anotaciones cuando se sale del modo fotos
+    // const toolBtn = document.getElementById("key1");
+    // if (toolBtn) toolBtn.style.visibility  = "hidden";
+    // toolBtn.style.pointerEvents = "none";
 
 
-    // si las anotaciones estaban activas, se apagan
-    if (showToolTip) {
-      toogleToolTips(); // deja el estado coherente + cambia el color del botón
-    }
+    // // si las anotaciones estaban activas, se apagan
+    // if (showToolTip) {
+    //   toogleToolTips(); // deja el estado coherente + cambia el color del botón
+    // }
 
     return;
   }
@@ -370,14 +369,16 @@ function togglePhotosMode() {
   photosMode = "on";
   if (btn) btn.classList.add("toggle-active");
   
-  // Mostrar botón de anotaciones solo en modo fotos
-  const toolBtn = document.getElementById("key1");
-  if (toolBtn) toolBtn.style.visibility  = "visible";
-  toolBtn.style.pointerEvents = "auto";
+  applyAnnotationsVisibility();
 
-  // Asegurar estado visual inicial (gris)
-  toolBtn.classList.remove("showKey");
-  toolBtn.classList.add("hideKey");
+  // // Mostrar botón de anotaciones solo en modo fotos
+  // const toolBtn = document.getElementById("key1");
+  // if (toolBtn) toolBtn.style.visibility  = "visible";
+  // toolBtn.style.pointerEvents = "auto";
+
+  // // Asegurar estado visual inicial (gris)
+  // toolBtn.classList.remove("showKey");
+  // toolBtn.classList.add("hideKey");
 
 
 
@@ -896,8 +897,8 @@ function highlightView() {
       "Recto",
       "Colon_ascendente",
       "Colon_transverso",
-      "Flexura_colica_derecha",
-      "Flexura_colica_izquierda",
+      "Flexura_derecha_del_colon",
+      "Flexura_izquierda_del_colon",
       "Colon_descendente"
   ];
 
@@ -994,7 +995,7 @@ function anatomySheetEscClose(e) {
 }
 //FIN VENTANA DE ANATOMÍA
 
-
+//Función para anclar la aparición de un botón cuando se clica otro
 function onKey1Click() {
   const wasOn = showToolTip;   // estado ANTES
 
@@ -1095,27 +1096,40 @@ function toggleXrayPiel(alpha = 0.22) {
 //Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga una pestaña Ej: "Exploración" en abdomen.Ca
 let showToolTip=false;
 function toogleToolTips() {
-  if (showToolTip) {
-    for (let i = 0; i < 9; i++) { // R: Según el nº de anotaciones modificar el último número
-      apiRef.hideAnnotation(i, function (err, index) {
-      });
-    }
-  } else {
-    for (let i = 0; i < 9; i++) { // R: Según el nº de anotaciones modificar el último número
-      apiRef.showAnnotation(i, function (err, index) {
-      });
-    }
-  }
+  showToolTip = !showToolTip;
+
   const btn = document.getElementById("key1");
-  if (!showToolTip) {
-    btn.classList.replace("hideKey", "showKey");
-  } else {
-    btn.classList.replace("showKey", "hideKey");
-  };
-  showToolTip = !showToolTip
+  if (btn) {
+    if (showToolTip) btn.classList.replace("hideKey", "showKey");
+    else btn.classList.replace("showKey", "hideKey");
+  }
+
+  applyAnnotationsVisibility();
 };
 
+// Para mostrar/ocultar anotaciones de numeración específica según se dé a otro botón distinto de toogleToolTips
+function applyAnnotationsVisibility() {
+  if (!apiRef) return;
 
+  // si el usuario tiene el botón de anotaciones en OFF -> ocultar TODAS (0..8)
+  if (!showToolTip) {
+    for (let k = 0; k <= 8; k++) apiRef.hideAnnotation(k);
+    return;
+  }
+
+  // showToolTip = ON:
+  // base: 0..6 siempre
+  for (let k = 0; k <= 6; k++) apiRef.showAnnotation(k);
+
+  // extras: 7..8 SOLO si cámara ON
+  if (photosMode === "on") {
+    apiRef.showAnnotation(7);
+    apiRef.showAnnotation(8);
+  } else {
+    apiRef.hideAnnotation(7);
+    apiRef.hideAnnotation(8);
+  }
+};
 
 //Para buscar nodes con siglas/palabras en común
 function findNodeGroups(code) {
