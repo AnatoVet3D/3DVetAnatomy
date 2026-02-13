@@ -47,7 +47,7 @@ const photoNodeIds = [];        // lista de instanceIDs para show/hide rápido
 // Nombre fotos reales (tal cual están escritas)
 const photoFilesByIndex = {
   0: "0-Ileon.jpg",
-  1: "1-Colon ascendente y Valvulas.jpg",
+  1: "1-Orificios ileocolico e ileocecal.jpg",
   2: "2-Flexura derecha del colon.jpg",
   3: "3-Colon transverso.jpg",
   4: "4-Flexura izquierda del colon.jpg",
@@ -879,20 +879,23 @@ function highlightView() {
   }
 
   const showList = [
-      "Colon_ascendente.2",
+      "Colon_ascendente.Fin",
       "Ileon",
       "Ciego",
-      "Mesocolon"
+      "Mesoileon"
   ];
 
   const hideList = [
-      "Piel_del_ano",
-      "Esfinter_anal",
+      "Piel",
+      "Saco_anal_izquierdo",
+      "Saco_anal_derecho",
+      "Esfinter_y_piel_del_ano",
       "Canal_anal",
       "Mesorrecto",
+      "Mesocolon",
       "Recto",
       "Colon_ascendente",
-      "Colon_trasnverso",
+      "Colon_transverso",
       "Flexura_colica_derecha",
       "Flexura_colica_izquierda",
       "Colon_descendente"
@@ -943,8 +946,7 @@ function highlightView() {
   ];
 
   apiRef.setCameraLookAt(cam, target, 1.4);
-}
-
+};
 //FIN VISTA ESPECIAL
 
 
@@ -1003,7 +1005,6 @@ function onKey1Click() {
     openAnatomySheet();
   }
 }
-
 
 //   MODO RAYOS X EN PIEL
 function clone(obj) {
@@ -1273,11 +1274,12 @@ function limpiarNombre(str) {
   const fixes = [
     { regex: /esf��nter|esf�nter|esfï¿½ï¿½nter|esfï¿½nter|esfinter/i, replace: "esfínter" },
     { regex: /c��lica|c�lica|cï¿½ï¿½lica|cï¿½lica|colica/i, replace: "cólica" },
+    { regex: /c��lico|c�lico|cï¿½ï¿½lico|cï¿½lico|colico/i, replace: "cólico" },    
     { regex: /col��nica|col�nica|colï¿½ï¿½nica|colï¿½lnica|colonica/i, replace: "colónica" },
     { regex: /cecoc��lico|cecoc�lico|cecocï¿½ï¿½lico|cecocï¿½lico|cecocolico/i, replace: "cecocólico" },
     { regex: /v��lvula|v�lvula|vï¿½ï¿½lvula|vï¿½lvula|valvula/i, replace: "válvula" },
     { regex: /ileon|ï¿½leon|��leon|�leon/i, replace: "íleon" },
-    { regex: /ileo|ï¿½leo|��leo|�leo/i, replace: "íleo" },
+    //{ regex: /ileo|ï¿½leo|��leo|�leo/i, replace: "íleo" },
     { regex: /gastr�|g��strico|g�strico/i, replace: "gástrico" }
   ];
 
