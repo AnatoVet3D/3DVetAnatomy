@@ -47,10 +47,10 @@ const photoNodeIds = [];        // lista de instanceIDs para show/hide rápido
 // Nombre fotos reales (tal cual están escritas)
 const photoFilesByIndex = {
   0: "0-Ileon.jpg",
-  1: "1-Colon ascendente y Válvulas.jpg",
-  2: "2-1era flexura colonica.jpg",
+  1: "1-Colon ascendente y Valvulas.jpg",
+  2: "2-Flexura derecha del colon.jpg",
   3: "3-Colon transverso.jpg",
-  4: "4-2a flexura colonica.jpg",
+  4: "4-Flexura izquierda del colon.jpg",
   5: "5-Colon descendente.jpg",
   6: "6-Recto.jpg"
 };
@@ -198,7 +198,7 @@ success = function( api ) {
 
 
     //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
-    for (let i = 0; i < 5; i++) { // R: Según el nº de anotaciones modificar el último número
+    for (let i = 0; i < 7; i++) { // R: Según el nº de anotaciones modificar el último número
       apiRef.hideAnnotation(i, function (err, index) {
         if (!err) {
           //window.console.log('Hiding annotation', index + 1);
@@ -269,6 +269,9 @@ success = function( api ) {
           filename0 = "";
         }
         else {
+          document.getElementById("label2").style.display = "none";
+          document.getElementById("image2").style.display = "none";
+          filename0 = "";
           document.getElementById('label1').innerHTML = name;
           document.getElementById("label1").style.display = "block";
         };
@@ -1238,6 +1241,10 @@ function showGroup(groupId) {
 
 // Función para aprovechar lo escrito en el nombre de cada pieza del modelo.
 function limpiarNombre(str) {
+  // Si hay sufijo tipo ".Fin", ".Algo", etc → nos quedamos con lo anterior
+  if (str.includes(".")) {
+    str = str.split(".")[0];
+  }
 
   // Quitar extensión de archivo (.jpg, .png, etc.)
   str = str.replace(/\.[a-z0-9]+$/i, "");
