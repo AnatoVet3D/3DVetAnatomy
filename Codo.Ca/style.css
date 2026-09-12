@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: Verdana, Geneva, sans-serif;
 }
 
 iframe {
@@ -10,8 +11,7 @@ iframe {
 
 /* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
-  width: 160px;
-
+  width: min(160px, 100%);
 }
 
 /* Para modificar posición y tamaño Escudo UCM */
@@ -31,7 +31,7 @@ iframe {
 }
 
 /*Tapete botones Sketchfab*/
-.fill{
+.fill {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -48,27 +48,102 @@ img {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+  box-sizing: border-box;
   margin: 35px 5px;
   right: 0;
   top: 44px;
   z-index: 1;
   position: absolute;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+}
+
+/* Fila de iconos (info / anotaciones / cruz): siempre una sola línea */
+.tool-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(32px, 1fr));
+  gap: 4px;
+  margin: 8px 0 10px;
+}
+
+.tool-row button {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Agrupación visual de botones azules por sistema (huesos, ligamentos...) */
+.panel {
+  background: rgba(18, 18, 18, 0.42);
+  border-radius: 8px;
+  padding: 6px 6px 8px;
+  margin-bottom: 8px;
+}
+
+.panel-title {
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin: 0 0 4px 4px;
+}
+
+/* Círculo a la izq. del título: azul = grupo visible, gris = apagado */
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 2px;
+}
+
+.panel-heading .panel-title {
+  margin: 0;
+}
+
+.panel button.panel-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 button {
-  width: 160px;
+  box-sizing: border-box;
+  width: 100%;
   height: auto;
-  min-height: 50px;
-  padding:6px;
-  line-height: 21px;
-  text-transform: capitalize;
+  min-height: 36px;
+  padding: 5px 6px;
+  line-height: 1.25;
+  text-transform: none;
   color: white;
-  opacity: 0.8;
+  opacity: 0.9;
   border: none;
   border-radius: 5px;
   text-align: center;
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
+  cursor: pointer;
+  font-size: 15px;
+  white-space: normal; /* palabras enteras, una debajo de otra si no caben */
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.panel button {
+  width: 100%;
 }
 
 /* Para poder elegir el color del boton cuando se enciende */
@@ -76,9 +151,12 @@ button {
   background: #1caad9;
 }
 
-.showKey{
+.showKey {
   background: #6fc24e;
-  width: 32%;
+}
+
+.symbols {
+  background: #df9a4b;
 }
 
 /* Para poder elegir el color del boton cuando se apaga */
@@ -88,7 +166,11 @@ button {
 
 .hideKey {
   background: #888888;
-  width: 32%;
+}
+
+.tool-row .material-symbols-outlined {
+  font-size: 22px;
+  line-height: 1;
 }
 
 /*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
@@ -100,6 +182,236 @@ button:active {
   font-weight: bold;
 }
 
-#key1{
-  margin-bottom: 6px;
+#key1 {
+  margin-bottom: 0;
+}
+
+/* Etiquetas de zonas óseas grandes (cóndilo / cabeza del radio) */
+.region-label {
+  position: fixed;
+  z-index: 15;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: rgba(11, 58, 90, 0.88);
+  color: #fff;
+  border: 2px solid #f0c36a;
+  border-radius: 999px;
+  padding: 6px 12px 6px 28px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+}
+
+.region-label::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  border: 2px solid #f0c36a;
+  border-radius: 50%;
+  background: rgba(240, 195, 106, 0.25);
+}
+.name-bubble {
+  position: fixed;
+  z-index: 20;
+  transform: translate(-50%, calc(-100% - 12px));
+  background: #0b3a5a;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.25;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  max-width: 240px;
+  text-align: center;
+}
+
+.name-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  border-width: 7px 7px 0 7px;
+  border-style: solid;
+  border-color: #0b3a5a transparent transparent transparent;
+}
+
+/* ---------- Modal Info ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;           /* cerrado por defecto */
+  z-index: 9999;
+}
+
+.modal.is-open {
+  display: block;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal__panel {
+  position: relative;
+  width: min(860px, 92vw);
+  max-height: 86vh;
+  margin: 6vh auto 0 auto;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--modal-accent);
+  color: white;
+}
+
+.modal__title {
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: bold;
+  color: white;
+}
+
+.modal__content {
+  padding: 14px 16px;
+  overflow: auto;
+  max-height: 66vh;
+  color: black;
+  font-size: clamp(12.5px, 1.6vw, 15px);
+  line-height: 1.35;
+}
+
+.modal__content h3 {
+  margin: 10px 0 6px 0;
+}
+
+.modal__list {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0 0 0;
+}
+
+.modal__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+.modal__list .material-symbols-outlined {
+  font-size: clamp(18px, 2.4vw, 26px);
+}
+
+.guide-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-weight: bold;
+  font-size: clamp(18px, 2.4vw, 26px); /* mismo tamaño que el resto de iconos del modal */
+}
+
+.guide-dot-empty,
+.guide-dot-filled {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.guide-dot-empty {
+  border: 2px solid currentColor;
+  background: transparent;
+}
+
+.guide-dot-filled {
+  background: #000;
+}
+
+.modal__footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal__btn {
+  background: #df9a4b;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  width: auto;
+  min-height: auto;
+}
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  .panel {
+    padding: 5px 4px 6px;
+  }
+
+  .panel-title {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+  }
+
+  .tool-row {
+    gap: 3px;
+  }
+
+  .tool-row button {
+    min-height: 34px;
+  }
+
+  .tool-row .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
+}
+
+:root {
+  --modal-accent: #007b00;   /* verde que tú elijas */
+  --modal-accent-dark: #256f53;
 }

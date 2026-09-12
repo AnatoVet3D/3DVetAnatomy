@@ -13,7 +13,7 @@ iframe {
   position: absolute;
   margin: 0px 5px;
   top: 45px;
-  width: 150px;
+  width: min(150px, 100%);
   right: 0px;
 }
 
@@ -51,16 +51,20 @@ img {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+
   position: absolute;
   margin: 35px 5px;
   right: 0;
   top: 45px;
   z-index: 1;
+  box-sizing: border-box;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 button {
-  width: 200px;
-  height: 38px;
+
   line-height: 21px;
   text-transform: capitalize;
   color: white;
@@ -70,6 +74,17 @@ button {
   text-align: center;
   display: block;
   margin-top: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
 }
 
 /* Para poder elegir el color del boton cuando se enciende */
@@ -93,12 +108,28 @@ button:active {
 
 #keyH {height: 40px;}
 
-/*Para adaptar los botones a anchos de pantalla más pequeños, las dimensiones son a ojo*/
-@media (max-width:600px){
-  button{
-    width: 100px;
-    height: 44px;
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
   }
-  #keyH {height: 66px;} 
-  #keyN {height: 66px;}
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
 }

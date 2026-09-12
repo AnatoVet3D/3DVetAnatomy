@@ -1,13 +1,16 @@
 const model = '7b80b3644c5449db8aa1a1fdd3a58cc3'; // Modelo de referencia a Sketchfab
 
-//Redefine los dos botones
-const buttonA = document.getElementById('buttonA');
-const buttonB = document.getElementById('buttonB');
-const buttonC = document.getElementById('buttonC');
+// var (no let/const): viewer-ui.js las usa desde el ámbito global
+var parts = {};          // nombre Sketchfab -> { visible }
+var listedNodes = {};    // instanceID -> { name }
+var idNodes = {};        // nombre Sketchfab -> instanceID (MatrixTransform)
+var apiRef;              // Referencia a la api, para poder llamarla fuera del eventListener
+var annotationCount = 8;
+var showToolTip = false;
 
-let azimuth;  //variable global para pasar el resultado de la función getAzimuth()
+let azimuth; // orientación de cámara para girar las etiquetas de los planos
 
-//Objeto para recoger las correspondencias entre nombres, nodos y botones
+// Nombre visible (con tildes) y nombre del nodo en Sketchfab
 const listedKeys = {
   'keyA': { kGroup: 'keyA', Name: 'Esqueleto', nodeName: 'Esqueleto' },
   'keyB': { kGroup: 'key2', Name: 'Esófago', nodeName: 'Esofago' },
@@ -48,25 +51,146 @@ const listedKeys = {
   'keyY4': { kGroup: 'key1', Name: 'Mesogastrio', nodeName: 'TMesogastrio' }
 };
 
-// Rellena el objeto "labelsFor" con las referencias HTML de las etiquetas "label for="
-const labelsFor = {};
-const labelsHTML = document.getElementsByTagName("label");
-for (let i = 0; i < labelsHTML.length; i++) {
-  labelsFor[labelsHTML[i].getAttribute("for")] = i;
+const EXPLORATION_NODES = ['Planos', 'TEpigastrio', 'THipogastrio', 'TMesogastrio'];
+
+// Aorta y cava arrastran arterias / venas hijas (igual que displayArterias / displayVenas)
+const PART_EXTRAS = {
+  'Arteria Aorta': [
+    'Arteria Celiaca', 'Arteria Iliaca Externa', 'Arteria Iliaca Interna',
+    'Arteria Iliaca Profunda', 'Arteria Mesenterica Caudal', 'Arteria Mesenterica Craneal',
+    'Arteria Renal', 'Arteria Testicular'
+  ],
+  'Vena Cava': ['Vena Renal', 'Vena Iliaca Externa', 'Vena Iliaca Interna']
+};
+
+// Círculos de grupo (Perro y Esqueleto van sueltos, como los huesos del codo)
+var PART_GROUPS = {
+  digestivo: {
+    btnId: 'keyGrpDig',
+    parts: [
+      { name: 'Esofago', btnId: 'keyEsofago' },
+      { name: 'Estomago', btnId: 'keyEstomago' },
+      { name: 'Duodeno', btnId: 'keyDuodeno' },
+      { name: 'Yeyuno', btnId: 'keyYeyuno' },
+      { name: 'Ileon', btnId: 'keyIleon' },
+      { name: 'Ciego', btnId: 'keyCiego' },
+      { name: 'Colon', btnId: 'keyColon' },
+      { name: 'Higado', btnId: 'keyHigado' },
+      { name: 'Vesicula Biliar', btnId: 'keyVesicula' },
+      { name: 'Pancreas', btnId: 'keyPancreas' }
+    ]
+  },
+  circulatorio: {
+    btnId: 'keyGrpCir',
+    parts: [
+      { name: 'Arteria Aorta', btnId: 'keyAorta' },
+      { name: 'Vena Cava', btnId: 'keyCava' },
+      { name: 'Vena Porta', btnId: 'keyPorta' },
+      { name: 'Nodulos Linfaticos', btnId: 'keyLinfo' }
+    ]
+  },
+  urinario: {
+    btnId: 'keyGrpUri',
+    parts: [
+      { name: 'Rinones', btnId: 'keyRinones' },
+      { name: 'Ureteres', btnId: 'keyUreteres' },
+      { name: 'Vejiga', btnId: 'keyVejiga' },
+      { name: 'Uretra', btnId: 'keyUretra' }
+    ]
+  },
+  otras: {
+    btnId: 'keyGrpOtr',
+    parts: [
+      { name: 'Glandulas Adrenales', btnId: 'keyAdrenales' },
+      { name: 'Bazo', btnId: 'keyBazo' }
+    ]
+  }
+};
+
+function displayNameForNode(rawName) {
+  const base = String(rawName || '').split('_')[0];
+  const q = normalizeKey(base);
+  for (const k in listedKeys) {
+    const nodeName = listedKeys[k].nodeName;
+    if (nodeName === base || nodeName === rawName || normalizeKey(nodeName) === q) {
+      return listedKeys[k].Name;
+    }
+  }
+  return base;
 }
 
-// Inserta en cada etiqueta de un órgano, el nombre de éste
-for (let key in listedKeys) {
-  const index = labelsFor[key];
-  if (index) { labelsHTML[index].innerText = listedKeys[key].Name; }
+function isIgnoredPickName(rawName) {
+  const base = String(rawName || '').split('_')[0];
+  return /^(RootNode|Camera|Light)$/i.test(base);
 }
 
-const listedNodes = {}; // Objeto para guardar todos los nodos, también los que tienen el mismo nombre
-const idNodes = {};     // Objeto para guardar los ID de los nodos
-let apiRef;             // Referencia a la api, para poder llamarla fuera del evetListener
+function setNodeVisible(name, visible) {
+  if (!parts[name]) parts[name] = { visible: true };
+  parts[name].visible = visible;
+  const id = idNodes[name];
+  if (id == null) return;
+  if (visible) apiRef.show(id);
+  else apiRef.hide(id);
+}
 
-//INICIO Sketchfab
-//Asi se llama a la versión de api que esté actualmente
+function setPartVisible(key, visible, skipSync) {
+  if (!parts[key] && idNodes[key] == null) return;
+  setNodeVisible(key, visible);
+  const extras = PART_EXTRAS[key];
+  if (extras) {
+    extras.forEach(function (name) {
+      setNodeVisible(name, visible);
+    });
+  }
+  if (!skipSync) {
+    refreshAllGroupButtons();
+    updateAnchoredLabels();
+  }
+}
+
+function afterGroupToggle() {
+  updateAnchoredLabels();
+}
+
+// El 1.er argumento es el nombre EXACTO del nodo en Sketchfab
+function showAndHide(nodeName, buttonId) {
+  const key = resolvePartKey(nodeName) || nodeName;
+  const visible = !isPartVisible(key);
+  setPartVisible(key, visible);
+  if (buttonId) setButtonOn(document.getElementById(buttonId), visible);
+  refreshAllGroupButtons();
+}
+
+function hideAllAnnotations() {
+  for (let i = 0; i < annotationCount; i++) {
+    apiRef.hideAnnotation(i, function () {});
+  }
+}
+
+function showAllAnnotations() {
+  for (let i = 0; i < annotationCount; i++) {
+    apiRef.showAnnotation(i, function () {});
+  }
+}
+
+function setExplorationVisible(visible) {
+  EXPLORATION_NODES.forEach(function (name) {
+    setPartVisible(name, visible, true);
+  });
+  if (visible) showAllAnnotations();
+  else hideAllAnnotations();
+}
+
+function toogleToolTips() {
+  const btn = document.getElementById('key1');
+  showToolTip = !showToolTip;
+  setExplorationVisible(showToolTip);
+  if (btn) {
+    if (showToolTip) btn.classList.replace('hideKey', 'showKey');
+    else btn.classList.replace('showKey', 'hideKey');
+  }
+}
+
 const iframe = document.getElementById('api-frame');
 const client = new Sketchfab(iframe);
 
@@ -75,137 +199,88 @@ function error() {
 }
 
 function success(api) {
-  apiRef = api; //Aquí ya estamos nombrando a la variable creada por nosotros
-                //para poder usarla fuera de lo de Sketchfab
+  apiRef = api;
   api.start();
-  // Wait for viewer to be ready
   api.addEventListener('viewerready', function () {
-    // Get the object nodes
     api.getNodeMap(function (err, nodes) {
       if (!err) {
         for (const prop in nodes) {
-          if (nodes.hasOwnProperty(prop)) {
-            const name = nodes[prop].name.split('_')[0];  //Nombre base, sin nombre de textura (_...)
-            const type = nodes[prop].type;
-            console.log(nodes[prop]);
-            listedNodes[prop] = name;
-            if (name === nodes[prop].name && type === "MatrixTransform") {
-              idNodes[name] = nodes[prop].instanceID;
-            }
+          if (!nodes.hasOwnProperty(prop)) continue;
+          const node = nodes[prop];
+          const fullName = node.name;
+          if (!fullName || fullName === 'undefined') continue;
+          const name = fullName.split('_')[0];
+          const entry = { name: name, instanceID: node.instanceID };
+          listedNodes[prop] = entry;
+          if (node.instanceID != null) listedNodes[node.instanceID] = entry;
+          if (name === fullName && node.type === 'MatrixTransform') {
+            idNodes[name] = node.instanceID;
+            if (!parts[name]) parts[name] = { visible: true };
           }
         }
-        
-        //Deselecciona algunos botones
-        document.getElementById('keyX').checked = false; showAndHide('keyX');
-        document.getElementById('key1').checked = false; showGroup('key1');
-        
-        //Bucle: cada 0.5 secundos comprueba la orientación de la vista y, si es el caso, da la vuelta a las tre etiquetas
-        setInterval(function () {
-          getAzimuth();
-              if ( azimuth>=-1.6461 && azimuth<=1.4736 ) {orientation = -Math.PI/2}
-              else                                     {orientation = Math.PI/2};
-              node = idNodes[listedKeys['keyY2'].nodeName]
-              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
-              node = idNodes[listedKeys['keyY3'].nodeName]
-              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
-              node = idNodes[listedKeys['keyY4'].nodeName]
-              api.rotate(node, [orientation, 0, 1, 0], {duration: 0, easing: 'easeOutQuad'});
-            }, 500); //time interval = 500 ms
+
+        setPartVisible('Perro', false, true);
+        setExplorationVisible(false);
+        showToolTip = false;
+        refreshAllGroupButtons();
       }
 
-      //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
-      for (let i = 0; i<8; i++){
-        apiRef.hideAnnotation(i, function(err, index) {
-          if (!err) {
-              window.console.log('Hiding annotation', index + 1);
-          }
-      });
-      }
+      hideAllAnnotations();
+
+      // Cada 0,5 s: si la vista lo pide, da la vuelta a las etiquetas de los planos
+      setInterval(function () {
+        getAzimuth();
+        const orientation = (azimuth >= -1.6461 && azimuth <= 1.4736) ? -Math.PI / 2 : Math.PI / 2;
+        ['keyY2', 'keyY3', 'keyY4'].forEach(function (k) {
+          const node = idNodes[listedKeys[k].nodeName];
+          if (node != null) api.rotate(node, [orientation, 0, 1, 0], { duration: 0, easing: 'easeOutQuad' });
+        });
+      }, 500);
     });
 
-    function getAzimuth() {
-      api.getCameraLookAt(function (err, camera) {
-            var Cx = camera.position[0];
-            var Cy = camera.position[1];
-            var Tx = camera.target[0];
-            var Ty = camera.target[1];
-            azimuth = Math.atan2(Cy-Ty, Cx-Tx);
+    if (api.getAnnotationList) {
+      api.getAnnotationList(function (err, annotations) {
+        if (!err && annotations) annotationCount = annotations.length;
+        hideAllAnnotations();
       });
     }
 
-    //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
-    const XYZa = [  
+    function getAzimuth() {
+      api.getCameraLookAt(function (err, camera) {
+        var Cx = camera.position[0];
+        var Cy = camera.position[1];
+        var Tx = camera.target[0];
+        var Ty = camera.target[1];
+        azimuth = Math.atan2(Cy - Ty, Cx - Tx);
+      });
+    }
+
+    // Punto "desde" / "hacia": izquierda, anterior, derecha, posterior
+    const XYZa = [
       [-0.0573, -1.0648, 0.0359],
       [-1.0623, 0.1739, 0.0266],
       [0.0597, 0.9722, 0.1828],
       [1.1125, -0.0995, 0.2066]
     ];
-
-    //Punto "desde" para las vistas izquierda, anterior, derecha, posterior
     const XYZb = [
       [0.0472, 0.0512, 0.0183],
       [0.0400, -0.0297, 0.0207],
       [-0.0320, -0.0237, 0.0160],
       [-0.0964, 0.0682, -0.0081]
     ];
-    
-    //Al abrirse el modelo, pone la vista estandar del lado izquierdo
-    api.setCameraLookAt(XYZa[3], XYZb[3], 2);
-    
-    //Hace girar cámara 90º en sentido horario, mirando hacia el lado izquierdo, posterior, derecho o frontal
-    //Primero comprueba en qué sector se encuentra, luego gira al siguiente
-    buttonA.addEventListener('click', function () {
-      getAzimuth();
 
-      //convierte el azimuth de la cámara en un índice de vista: 0=posterior, 1=izquierda, 2=anterior, 3=derecha
-          let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
-          if (XYZi == -1) {XYZi = 3}
-
-          if (XYZi < 3) { XYZi ++ }
-          else          { XYZi = 0 };
-          api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
+    enableOrthoSnapViews({
+      from: XYZa,
+      target: XYZb,
+      initialIndex: 3,
+      duration: 2
     });
 
-    //Hace girar la cámara 90º en sentido antihorario, mirando hacia el lado izquierdo, frontal, derecho o posterior
-    //Primero comprueba en qué sector se encuentra, luego gira al siguiente sector
-    buttonB.addEventListener('click', function () {
-      getAzimuth();
-          let XYZi = Math.round((Math.PI-azimuth)/(Math.PI/2))-1;
-          if (XYZi == -1) {XYZi = 3}
-
-          if (XYZi > 0) { XYZi -- }
-          else          { XYZi = 3 };
-          api.setCameraLookAt(XYZa[XYZi], XYZb[XYZi], 2);
-    });
-
-    //Abre una ventana con informacion de uso del visor
-    buttonC.addEventListener('click', function () {
-      alert("Modelo 3D \"Abdomen de perro\"\n" +
-        "Facultad de Veterinaria - Universidad Complutense de Madrid\n\n" +
-        "Controles con el ratón:\n" +
-        "- Botón izquierdo: gira el modelo\n" +
-        "- Botón central: desplaza el modelo\n" +
-        "- Girar rueda: zoom\n" +
-        "- Clic en un órgano: muestra el nombre del órgano en rojo (esquina superior dch) \n" +
-        "- Doble clic en un órgano: lo convierte en el punto de giro del modelo\n" +
-        "- Clic en flechas de giro: giran el modelo en las 4 vistas anatómicas\n" +
-        "- Opciones del menú: encienden/apagan un órgano o grupo de órganos"
-      );
-    });
-
-    //Código para mostrar el nombre de un órgano cuando se clica en él
-    api.addEventListener('click', function (info) {
-      if (info.instanceID === null) {
-        document.getElementById('labelpick').innerHTML = 'clic en un órgano...';
-      } else {
-        const node = listedNodes[info.instanceID];
-        for (const kBox in listedKeys) {
-          if (listedKeys[kBox].nodeName === node) {
-            document.getElementById('labelpick').innerHTML = listedKeys[kBox].Name;
-          }
-        }
-      }
-    }, { pick: 'slow' });
+    enableHoverHighlight();
+    enableClickNameBubble();
+    api.addEventListener('camerastart', startAnchorTracking);
+    api.addEventListener('camerastop', stopAnchorTracking);
+    window.addEventListener('resize', updateAnchoredLabels);
   });
 }
 
@@ -218,136 +293,3 @@ client.init(model, {
   watermark: 1,
   supersample: 0
 });
-
-// Funciones Propias
-//creadas para solo tener que llamarlas desde el .HTML
-//Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga pestaña "Exploración"
-let showToolTip=false;
-function toogleToolTips(){
-if (showToolTip){
-  for (let i = 0; i<8; i++){
-    apiRef.hideAnnotation(i, function(err, index) {
-      if (!err) {
-          window.console.log('Hiding annotation', index + 1);
-      }
-  });
-  }
-} else {
-  for (let i = 0; i<8; i++){
-    apiRef.showAnnotation(i, function(err, index) {
-      if (!err) {
-          window.console.log('Showing annotation', index + 1);
-      }
-  });
-}
-}
-showToolTip=!showToolTip
-}
-
-//Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
-function showAndHide(key) {
-  const node = listedKeys[key].nodeName;
-  const group = listedKeys[key].kGroup;
-  const checkBox = document.getElementById(key);
-  const checkGroup = document.getElementById(group);
-
-  if (checkBox.checked == true && checkGroup.checked == true) {
-    apiRef.show(idNodes[node]);
-    if (key == "keyP") {displayArterias(true)};
-    if (key == "keyR") {displayVenas(true)};
-  } else {
-    apiRef.hide(idNodes[node]);
-    if (key === "keyP") { displayArterias(false); }
-    if (key === "keyR") { displayVenas(false); }
-  }
-}
-
-// Muestra nombres de arterias/venas en la "caja"
-function displayArterias(show) {
-  const keys = [ "keyQ1", "keyQ2", "keyQ3", "keyQ4", "keyQ5", "keyQ6", "keyQ7", "keyQ8" ];
-  for (key of keys) {
-    const node = listedKeys[key].nodeName
-    if (show) { apiRef.show(idNodes[node]) }
-    else      { apiRef.hide(idNodes[node]) }
-  }
-}
-
-function displayVenas(show) {
-  const keys = ["keyS1", "keyS2", "keyS3"];
-  for (const key of keys) {
-    const node = listedKeys[key].nodeName;
-    if (show) { apiRef.show(idNodes[node]); }
-    else { apiRef.hide(idNodes[node]); }
-  }
-}
-
-// Activa-Desactiva los grupos de botones
-function showGroup(groupId) {
-  const checkGroup = document.getElementById(groupId);
-  const group = [];
-
-  switch (groupId) {
-    case "key1":
-      group.push("keyY1", "keyY2", "keyY3", "keyY4");
-      break;
-    case "key2":
-      group.push("keyB", "keyC", "keyD", "keyE", "keyF", "keyG", "keyH", "keyI", "keyJ", "keyK");
-      break;
-    case "key3":
-      group.push("keyL", "keyM", "keyN", "keyO");
-      break;
-    case "key4":
-      group.push("keyP", "keyR", "keyT", "keyU");
-      break;
-    case "key5":
-      group.push("keyV", "keyW");
-      break;
-  }
-
-  for (const key of group) {
-    const node = listedKeys[key].nodeName;
-    const checkBox = document.getElementById(key);
-
-    if (checkGroup.checked) {
-      if (groupId === "key1" || checkBox.checked) { apiRef.show(idNodes[node]); }
-      if (key === "keyP" && checkBox.checked) { displayArterias(true); }
-      if (key === "keyR" && checkBox.checked) { displayVenas(true); }
-      if (groupId !== "key1") {
-        checkBox.disabled = false;
-        labelsHTML[labelsFor[key]].style.color = 'blue';
-      }
-    } else {
-      apiRef.hide(idNodes[node]);
-      if (key === "keyP") { displayArterias(false); }
-      if (key === "keyR") { displayVenas(false); }
-      if (groupId !== "key1") {
-        checkBox.disabled = true;
-        labelsHTML[labelsFor[key]].style.color = 'gray';
-      }
-    }
-  }
-}
-
-
-  // //Código para mostrar el nombre de un órgano cuando se clica en él
-  // api.addEventListener('click', function(info) {
-  //   if (info.instanceID === null) {
-  //     document.getElementById('labelPick').innerHTML = 'clic en un órgano...';
-  //     document.getElementById('labelNote').innerHTML = '';
-  //   }
-  //   else {
-  //     const node = listedNodes[info.instanceID];
-  //     for (kBox in listedKeys) {
-  //       if (listedKeys[kBox].nodeName == node) {
-  //         Name = listedKeys[kBox].Name;
-  //         Note = listedKeys[kBox].Note;  // Esto es para poner las notas a un estilo propio en lugar de usar Sketchfab
-  //         document.getElementById('labelPick').innerHTML = Name;
-  //         if (Note != '') { document.getElementById('labelNote').innerHTML = '<hr>' + Note; } 
-  //         else            { document.getElementById('labelNote').innerHTML = ''; }
-  //       }
-  //     }
-  //   }
-  // },
-  // { pick: 'slow' });
-
-//FIN Sketchfab

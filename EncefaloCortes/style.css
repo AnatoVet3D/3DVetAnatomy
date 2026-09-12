@@ -10,7 +10,7 @@ iframe {
 
 /* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
-  width: 130px;
+  width: min(130px, 100%);
   margin: 0px 5px;
   top: 45px;
   width: 150px;
@@ -57,16 +57,20 @@ span {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+
   margin: 35px 5px;
   right: 0;
   top: 44px;
   z-index: 1;
   position: absolute;
+  box-sizing: border-box;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 button {
-  width: 200px;
-  height: 50px;
+
   line-height: 21px;
   text-transform: capitalize;
   color: white;
@@ -78,6 +82,17 @@ button {
   display: block;
   margin-top: 2px;
   background: #1caad9;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
 }
 
 /*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
@@ -118,4 +133,31 @@ button:active {
 #keyE {
   width: 32%;
   display: inline;
+}
+
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
 }

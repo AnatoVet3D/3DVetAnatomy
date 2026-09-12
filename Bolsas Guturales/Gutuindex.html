@@ -29,22 +29,37 @@
       <!-- <button class= "showKey" id="key1" onclick="toogleToolTips()" checked><span class="material-symbols-outlined">edit_square</span></button> -->
     </div>
 
+    <div class="opacity-control">
+      <div class="panel-title">Opacidad cráneo</div>
+      <input type="range" id="skullOpacity" min="0" max="1" step="0.01" value="0.4" title="Opacidad del hueso del cráneo" aria-label="Opacidad del cráneo">
+    </div>
+
     <!-- <button class="showKey" id="key1" onclick="toogleToolTips()" checked> <label for="key1">Anotaciones</label> -->
     <button class="showButton" id="keyA" onclick="showAndHide('V.Yugular', 'keyA')">Venas</button>
-
-    <!-- Nombre del botón -->
     <button class="showButton" id="keyD" onclick="showAndHide('A.gutural1', 'keyD')">Arterias</button>
-    <button class="showButton" id="keyE" onclick="showAndHideGroup('BolsaGutural', 'keyE')">Bolsas Guturales</button>
     <button class="showButton" id="keyH" onclick="showAndHide('Hioides', 'keyH')">Hioides</button>
-
-    <!-- Nombre del botón -->
-    <button class="showButton" id="keyG" onclick="showAndHide('Diverticulo_TrompaAuditiva', 'keyG')">Divertículo-Trompa Auditiva</button>
     <button class="showButton" id="keyI" onclick="showAndHide('Meatos-cav_nasal', 'keyI')">Meatos - Cavidad nasal</button>
-    <button class="showButton" id="keyJ" onclick="showAndHide('Seno_Conchofrontal', 'keyJ')">Senos Conchofrontales</button>
-    <button class="showButton" id="keyK" onclick="showAndHide('Seno_Esfenopalatino', 'keyK')">Senos Esfenopalatinos</button>
-    <button class="showButton" id="keyL" onclick="showAndHide('Seno_Etmoidal', 'keyL')">Senos Etmoidales</button>
-    <button class="showButton" id="keyM" onclick="showAndHide('Seno_MaxilarCaudal', 'keyM')">Senos Maxilares Caudales</button>
-    <button class="showButton" id="keyN" onclick="showAndHide('Seno_MaxilarRostral', 'keyN')">Senos Maxilares Rostrales</button>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpBol" onclick="togglePartGroup('bolsas')" title="Encender o apagar todas las bolsas guturales" aria-label="Bolsas guturales"></button>
+        <div class="panel-title">Bolsas guturales</div>
+      </div>
+      <button class="showButton" id="keyE" onclick="showAndHide('BolsaGutural', 'keyE')">Bolsas guturales</button>
+      <button class="showButton" id="keyG" onclick="showAndHide('Diverticulo_TrompaAuditiva', 'keyG')">Divertículo-Trompa auditiva</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpSen" onclick="togglePartGroup('senos')" title="Encender o apagar todos los senos paranasales" aria-label="Senos paranasales"></button>
+        <div class="panel-title">Senos paranasales</div>
+      </div>
+      <button class="showButton" id="keyJ" onclick="showAndHide('Seno_Conchofrontal', 'keyJ')">Senos conchofrontales</button>
+      <button class="showButton" id="keyK" onclick="showAndHide('Seno_Esfenopalatino', 'keyK')">Senos esfenopalatinos</button>
+      <button class="showButton" id="keyL" onclick="showAndHide('Seno_Etmoidal', 'keyL')">Senos etmoidales</button>
+      <button class="showButton" id="keyM" onclick="showAndHide('Seno_MaxilarCaudal', 'keyM')">Senos maxilares caudales</button>
+      <button class="showButton" id="keyN" onclick="showAndHide('Seno_MaxilarRostral', 'keyN')">Senos maxilares rostrales</button>
+    </div>
 
   </div>
 
@@ -77,6 +92,8 @@
             <li><span class="material-symbols-outlined">skull</span> Mostrar/ocultar calavera</li>
             <li><span class="material-symbols-outlined">split_scene_down</span> Mostrar/ocultar corte craneal</li>
             <li><span class="material-symbols-outlined">split_scene_left</span> Mostrar/ocultar corte parasagital</li>
+            <li><span class="guide-dots" aria-hidden="true"><span class="guide-dot-empty"></span>/<span class="guide-dot-filled"></span></span> Apaga/enciende todas las estructuras de ese grupo</li>
+            <li>El deslizador regula la transparencia del cráneo.</li>
           </ul>
         </div>
 
@@ -89,6 +106,7 @@
 
 
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="../assets/js/viewer-ui.js"></script>
   <script src="main.js"></script>
 </body>
 

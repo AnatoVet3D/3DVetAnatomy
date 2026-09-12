@@ -77,8 +77,8 @@ let initialCameraSaved = false;
 //Nodos
 const filteredNodes = {}; // Objeto para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
 const listedTargets = {};  // registro con los índices de las zonas sensibles Target1 a Target8
-let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
-let listedNodes = {}; 
+var apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
+var listedNodes = {}; 
 
 //Curva de recorrido endoscopia
 var XYZ = [];
@@ -228,7 +228,7 @@ success = function( api ) {
 
         // Si estamos en modo fotos y el nodo clicado es uno de FotoX.* -> mostrar imagen
         if (photosMode === "on" && listedPhotoNodes[id]) {
-          // ocultar label normal
+          hideNameBubble();
           document.getElementById("label1").style.display = "none";
           textlabel0 = "";
 
@@ -259,6 +259,7 @@ success = function( api ) {
 
 
         if (info.instanceID == null) {
+          hideNameBubble();
           document.getElementById("label1").style.display = "none";
           textlabel0 = "";
 
@@ -269,14 +270,19 @@ success = function( api ) {
           document.getElementById("label2").style.display = "none";
           document.getElementById("image2").style.display = "none";
           filename0 = "";
-          document.getElementById('label1').innerHTML = name;
-          document.getElementById("label1").style.display = "block";
+          textlabel0 = name;
+          showAnchoredNameBubble(name, info.position3D, listedNodes[info.instanceID]?.name);
         };
       },
       { pick: 'slow' });
 
     //Para que se pueda aplicar el hover sobre los modelos cuando se pasa el ratón por encima
     enableHoverHighlight();
+
+    // Mientras gira/desplaza/zoom, el bocadillo sigue el punto 3D anclado
+    api.addEventListener('camerastart', startAnchorTracking);
+    api.addEventListener('camerastop', stopAnchorTracking);
+    window.addEventListener('resize', updateAnchoredLabels);
 
     ListaAnimaciones();
   });
@@ -348,6 +354,7 @@ function togglePhotosMode() {
     document.getElementById("label2").style.display = "none";
     document.getElementById("image2").style.display = "none";
     filename0 = "";
+    hideNameBubble();
 
     applyAnnotationsVisibility();
 

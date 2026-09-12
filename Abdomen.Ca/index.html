@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Abdomen de canino</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <title>Abdomen canino</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=attractions,edit_square,info,left_click,pan_tool,rotate_90_degrees_ccw,rotate_90_degrees_cw,skeleton,sound_detection_dog_barking" rel="stylesheet" />
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,59 +14,131 @@
     sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
     allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
-  <div class="img-container1"> <!-- Si logo encima de letras -->
-    <img src="../assets/img/boton-vet-ucm.png">
-  </div>
+  <div id="nameBubble" class="name-bubble" hidden></div>
 
-  <div class="labels">
-    <div class="button-container">
-      <button id="buttonA"><span class="material-symbols-outlined">rotate_90_degrees_cw</span></button>
-      <button id="buttonC"><span class="material-symbols-outlined">info</span></button>
-      <button id="buttonB"><span class="material-symbols-outlined">rotate_90_degrees_ccw</span></button>
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+    <div class="img-container1">
+      <img src="../assets/img/boton-vet-ucm.png" alt="Veterinaria UCM">
     </div>
-    <hr> <!-- Linea divisoria -->
-    <label class="labelpick" id="labelpick">clic en un órgano...</label>
-    <hr><input class="check1" type="checkbox" id="keyX" onclick="showAndHide('keyX')" checked> <label for="keyX"></label>
-    <br><input class="check1" type="checkbox" id="key1" onclick="showGroup('key1'); toogleToolTips()" checked> <label for="key1">Exploración</label>
-    <br><input class="check1" type="checkbox" id="keyA" onclick="showAndHide('keyA')" checked> <label for="keyA"></label>
-    <p><input class="check1" type="checkbox" id="key2" onclick="showGroup('key2')" checked> <label for="key2">Aparato Digestivo</label>
-      <br><input class="check2" type="checkbox" id="keyB" onclick="showAndHide('keyB')" checked> <label for="keyB"></label>
-      <br><input class="check2" type="checkbox" id="keyC" onclick="showAndHide('keyC')" checked> <label for="keyC"></label>
-      <br><input class="check2" type="checkbox" id="keyD" onclick="showAndHide('keyD')" checked> <label for="keyD"></label>
-      <br><input class="check2" type="checkbox" id="keyE" onclick="showAndHide('keyE')" checked> <label for="keyE"></label>
-      <br><input class="check2" type="checkbox" id="keyF" onclick="showAndHide('keyF')" checked> <label for="keyF"></label>
-      <br><input class="check2" type="checkbox" id="keyH" onclick="showAndHide('keyH')" checked> <label for="keyH"></label>
-      <br><input class="check2" type="checkbox" id="keyG" onclick="showAndHide('keyG')" checked> <label for="keyG"></label>
-      <br><input class="check2" type="checkbox" id="keyI" onclick="showAndHide('keyI')" checked> <label for="keyI"></label>
-      <br><input class="check2" type="checkbox" id="keyJ" onclick="showAndHide('keyJ')" checked> <label for="keyJ"></label>
-      <br><input class="check2" type="checkbox" id="keyK" onclick="showAndHide('keyK')" checked> <label for="keyK"></label>
-    <p><input class="check1" type="checkbox" id="key4" onclick="showGroup('key4')" checked> <label for="key4">Sistema Circulatorio</label>
-      <br><input class="check2" type="checkbox" id="keyP" onclick="showAndHide('keyP')" checked> <label for="keyP"></label>
-      <br><input class="check2" type="checkbox" id="keyR" onclick="showAndHide('keyR')" checked> <label for="keyR"></label>
-      <br><input class="check2" type="checkbox" id="keyT" onclick="showAndHide('keyT')" checked> <label for="keyT"></label>
-      <br><input class="check2" type="checkbox" id="keyU" onclick="showAndHide('keyU')" checked> <label for="keyU"></label>
-    <p><input class="check1" type="checkbox" id="key3" onclick="showGroup('key3')" checked> <label for="key3">Sistema Urinario</label>
-      <br><input class="check2" type="checkbox" id="keyL" onclick="showAndHide('keyL')" checked> <label for="keyL"></label>
-      <br><input class="check2" type="checkbox" id="keyM" onclick="showAndHide('keyM')" checked> <label for="keyM"></label>
-      <br><input class="check2" type="checkbox" id="keyN" onclick="showAndHide('keyN')" checked> <label for="keyN"></label>
-      <br><input class="check2" type="checkbox" id="keyO" onclick="showAndHide('keyO')" checked> <label for="keyO"></label>
-    <p><input class="check1" type="checkbox" id="key5" onclick="showGroup('key5')" checked> <label for="key5">Otras Estructuras</label>
-      <br><input class="check2" type="checkbox" id="keyV" onclick="showAndHide('keyV')" checked> <label for="keyV"></label>
-      <br><input class="check2" type="checkbox" id="keyW" onclick="showAndHide('keyW')" checked> <label for="keyW"></label>
+
+    <div class="tool-row">
+      <button class="showButton" id="buttonA" title="Vista 90° horario">
+        <span class="material-symbols-outlined">rotate_90_degrees_cw</span>
+      </button>
+      <button class="symbols" id="buttonC" onclick="showInfo()" title="Información">
+        <span class="material-symbols-outlined">info</span>
+      </button>
+      <button class="showButton" id="buttonB" title="Vista 90° antihorario">
+        <span class="material-symbols-outlined">rotate_90_degrees_ccw</span>
+      </button>
+    </div>
+
+    <div class="tool-row">
+      <button class="hideKey" id="key1" onclick="toogleToolTips()" title="Exploración (anotaciones y planos)">
+        <span class="material-symbols-outlined">edit_square</span>
+      </button>
+      <button class="hideButton" id="keyPerro" data-on-class="symbols" onclick="showAndHide('Perro', 'keyPerro')" title="Perro">
+        <span class="material-symbols-outlined">sound_detection_dog_barking</span>
+      </button>
+      <button class="symbols" id="keyEsqueleto" data-on-class="symbols" onclick="showAndHide('Esqueleto', 'keyEsqueleto')" title="Esqueleto">
+        <span class="material-symbols-outlined">skeleton</span>
+      </button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpDig" onclick="togglePartGroup('digestivo')" title="Encender o apagar todo el aparato digestivo" aria-label="Aparato digestivo"></button>
+        <div class="panel-title">Aparato digestivo</div>
+      </div>
+      <button class="showButton" id="keyEsofago" onclick="showAndHide('Esofago', 'keyEsofago')">Esófago</button>
+      <button class="showButton" id="keyEstomago" onclick="showAndHide('Estomago', 'keyEstomago')">Estómago</button>
+      <button class="showButton" id="keyDuodeno" onclick="showAndHide('Duodeno', 'keyDuodeno')">Duodeno</button>
+      <button class="showButton" id="keyYeyuno" onclick="showAndHide('Yeyuno', 'keyYeyuno')">Yeyuno</button>
+      <button class="showButton" id="keyIleon" onclick="showAndHide('Ileon', 'keyIleon')">Íleon</button>
+      <button class="showButton" id="keyCiego" onclick="showAndHide('Ciego', 'keyCiego')">Ciego</button>
+      <button class="showButton" id="keyColon" onclick="showAndHide('Colon', 'keyColon')">Colon</button>
+      <button class="showButton" id="keyHigado" onclick="showAndHide('Higado', 'keyHigado')">Hígado</button>
+      <button class="showButton" id="keyVesicula" onclick="showAndHide('Vesicula Biliar', 'keyVesicula')">Vesícula biliar</button>
+      <button class="showButton" id="keyPancreas" onclick="showAndHide('Pancreas', 'keyPancreas')">Páncreas</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpCir" onclick="togglePartGroup('circulatorio')" title="Encender o apagar todo el sistema circulatorio" aria-label="Sistema circulatorio"></button>
+        <div class="panel-title">Sistema circulatorio</div>
+      </div>
+      <button class="showButton" id="keyAorta" onclick="showAndHide('Arteria Aorta', 'keyAorta')">Aorta abdominal</button>
+      <button class="showButton" id="keyCava" onclick="showAndHide('Vena Cava', 'keyCava')">V. cava caudal</button>
+      <button class="showButton" id="keyPorta" onclick="showAndHide('Vena Porta', 'keyPorta')">V. porta</button>
+      <button class="showButton" id="keyLinfo" onclick="showAndHide('Nodulos Linfaticos', 'keyLinfo')">Linfonódulos</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpUri" onclick="togglePartGroup('urinario')" title="Encender o apagar todo el sistema urinario" aria-label="Sistema urinario"></button>
+        <div class="panel-title">Sistema urinario</div>
+      </div>
+      <button class="showButton" id="keyRinones" onclick="showAndHide('Rinones', 'keyRinones')">Riñones</button>
+      <button class="showButton" id="keyUreteres" onclick="showAndHide('Ureteres', 'keyUreteres')">Uréteres</button>
+      <button class="showButton" id="keyVejiga" onclick="showAndHide('Vejiga', 'keyVejiga')">Vejiga</button>
+      <button class="showButton" id="keyUretra" onclick="showAndHide('Uretra', 'keyUretra')">Uretra</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpOtr" onclick="togglePartGroup('otras')" title="Encender o apagar el resto de estructuras" aria-label="Otras estructuras"></button>
+        <div class="panel-title">Otras estructuras</div>
+      </div>
+      <button class="showButton" id="keyAdrenales" onclick="showAndHide('Glandulas Adrenales', 'keyAdrenales')">Glándulas adrenales</button>
+      <button class="showButton" id="keyBazo" onclick="showAndHide('Bazo', 'keyBazo')">Bazo</button>
+    </div>
   </div>
 
-  <div class="img-container2"> <!-- logo esquina inferior-->
-    <img src="../assets/img/logo-ucm.png">
+  <div class="img-container2">
+    <img src="../assets/img/logo-ucm.png" alt="Escudo UCM">
   </div>
 
   <div class="fill">
-    <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
-      <img src="../assets/img/CreativeCommons.png">
+    <div class="img-container3">
+      <img src="../assets/img/CreativeCommons.png" alt="Creative Commons">
+    </div>
+  </div>
+
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeInfoModal()"></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal__header">
+        <div id="infoModalTitle" class="modal__title">Abdomen canino · Guía rápida</div>
+      </div>
+      <div class="modal__content">
+        <h3>Controles de navegación</h3>
+        <ul class="modal__list">
+          <li><span class="material-symbols-outlined">left_click</span> Botón izquierdo: girar el modelo</li>
+          <li><span class="material-symbols-outlined">pan_tool</span> Botón derecho o central: desplazar en el plano</li>
+          <li><span class="material-symbols-outlined">attractions</span> Rueda: zoom</li>
+          <li><span class="material-symbols-outlined">rotate_90_degrees_cw</span> Vistas anatómicas a 90°</li>
+          <li><span class="material-symbols-outlined">info</span> Esta guía de uso</li>
+          <li><span class="material-symbols-outlined">edit_square</span> Mostrar u ocultar las anotaciones y los planos de exploración</li>
+          <li><span class="material-symbols-outlined">sound_detection_dog_barking</span> Mostrar u ocultar el perro</li>
+          <li><span class="material-symbols-outlined">skeleton</span> Mostrar u ocultar el esqueleto</li>
+        </ul>
+        <h3>Modelo 3D</h3>
+        <ul class="modal__list">
+          <li><span class="guide-dots" aria-hidden="true"><span class="guide-dot-empty"></span>/<span class="guide-dot-filled"></span></span> Apaga/enciende todas las estructuras de ese grupo</li>
+          <li>Al pasar el cursor, la estructura se ilumina.</li>
+          <li>Al hacer clic, aparece el nombre de esa pieza.</li>
+          <li>Los botones azules de la derecha encienden o apagan cada estructura.</li>
+        </ul>
+      </div>
+      <div class="modal__footer">
+        <button class="modal__btn" onclick="closeInfoModal()">Cerrar</button>
+      </div>
     </div>
   </div>
 
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="../assets/js/viewer-ui.js"></script>
   <script src="main.js"></script>
-
 </body>
+
 </html>

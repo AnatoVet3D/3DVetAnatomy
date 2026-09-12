@@ -14,6 +14,9 @@
   <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" 
     allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
+  <!-- Bocadillo con el nombre de la pieza clicada (texto blanco sobre azul oscuro) -->
+  <div id="nameBubble" class="name-bubble" hidden></div>
+
   <!-- Imagenes/nombres que aparecen/desaparecen al clicar a la izq -->
   <div class="images"> 
     <label id="label1" hidden></label>
@@ -40,7 +43,10 @@
       <button id="keyF2" hidden onclick="goOutside()"><span class="material-symbols-outlined">ios_share</span></button>
       <button id="autoEndo" class="hideButton"><span class="material-symbols-outlined">play_circle</span></button> <!-- o "play_arrow" si lo prefieres -->      
     </div>
-    <input type="range" id="speedSlider" min="80" max="350" value="200" step="10">
+    <div class="speed-control">
+      <div class="panel-title">Velocidad endoscopia</div>
+      <input type="range" id="speedSlider" min="80" max="350" value="200" step="10" title="Velocidad endoscopia" aria-label="Velocidad endoscopia">
+    </div>
     <div>
       <button id="keyG" onclick="moveEndoBackward()"><span class="material-symbols-outlined">keyboard_double_arrow_left</span></button>
       <button id="keyI">0</button>
@@ -82,7 +88,8 @@
             <li><span class="material-symbols-outlined">replay</span>/<span class="material-symbols-outlined">forward_media</span> Cambiar dirección (craneal/caudal)</li>
             <li><span class="material-symbols-outlined">place_item</span>/<span class="material-symbols-outlined">ios_share</span> Entrar/Salir del órgano</li>
             <li><span class="material-symbols-outlined">keyboard_double_arrow_left</span>/<span class="material-symbols-outlined">keyboard_double_arrow_right</span> Avanzar/retroceder por puntos</li>
-            <li><span class="material-symbols-outlined">play_circle</span> Autoplay (usa el slider para velocidad)</li>
+            <li><span class="material-symbols-outlined">play_circle</span> Autoplay del recorrido endoscópico</li>
+            <li>El deslizador «Velocidad endoscopia» ajusta la rapidez de ese recorrido.</li>
             <li><span class="material-symbols-outlined">photo_camera</span> Modo cámara: mostrar zonas con fotos y abrir imágenes al clicar</li>
             <li><span class="material-symbols-outlined">edit_square</span> Anotaciones Sketchfab</li>
             <li><span class="material-symbols-outlined">reset_focus</span> Reset del recorrido endoscópico</li>
@@ -121,6 +128,7 @@
 
 
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="../assets/js/viewer-ui.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

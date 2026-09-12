@@ -14,32 +14,129 @@
     sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
     allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
+  <!-- Bocadillo con el nombre de la pieza clicada (texto blanco sobre azul oscuro) -->
+  <div id="nameBubble" class="name-bubble" hidden></div>
+
+  <!-- Zonas óseas grandes que no caben como pin de Sketchfab; se ven al encender anotaciones -->
+  <div id="regionLabels" hidden>
+    <div class="region-label" id="regionCondilo">Cóndilo del húmero</div>
+    <div class="region-label" id="regionCabeza">Cabeza del radio</div>
+  </div>
+
   <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
 
     <div class="img-container1"> <!-- Si logo encima de letras -->
-      <img src="../assets/img/boton-vet-ucm.png">
+      <img src="../assets/img/boton-vet-ucm.png" alt="Veterinaria UCM">
     </div>
 
-    <br><button class="hideKey" id="key1" onclick="toogleToolTips()" checked><span class="material-symbols-outlined">edit_square</span></button>
-    <button class="showButton" id="keyA" onclick="showAndHide('Radio', 'keyA')">Radio</button> <!-- Nombre del botón -->
-    <button class="showButton" id="keyH" onclick="showAndHide('Cubito', 'keyH')">Cubito</button>
-    <button class="showButton" id="keyK" onclick="showAndHide('Humero', 'keyK')">Húmero</button>
-    <button class="showButton" id="keyI" onclick="showAndHide('No idea', 'keyI')">Sesamoideo </br>m. supinador</button>
+    <!-- Fila de iconos: info, anotaciones Sketchfab, cruz de orientación -->
+    <div class="tool-row">
+      <button class="symbols" id="buttonC" onclick="showInfo()" title="Información">
+        <span class="material-symbols-outlined">info</span>
+      </button>
+      <button class="hideKey" id="key1" onclick="toogleToolTips()" title="Anotaciones">
+        <span class="material-symbols-outlined">edit_square</span>
+      </button>
+      <button class="showKey" id="keyCompass" onclick="toggleCompass()" title="Planos de orientación">
+        <span class="material-symbols-outlined">gamepad</span>
+      </button>
+    </div>
 
+    <!-- El 1.er argumento de showAndHide es el nombre EXACTO del nodo en Sketchfab -->
+    <div class="panel">
+      <div class="panel-title">Huesos</div>
+      <button class="showButton" id="keyHumero" onclick="showAndHide('Humero', 'keyHumero')">Húmero</button>
+      <button class="showButton" id="keyRadio" onclick="showAndHide('Radio', 'keyRadio')">Radio</button>
+      <button class="showButton" id="keyCubito" onclick="showAndHide('Cubito', 'keyCubito')">Cúbito</button>
+      <button class="showButton" id="keySesamoideo" onclick="showAndHide('Sesamoideo del m. supinador', 'keySesamoideo')">Sesamoideo del m. supinador</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpLig" onclick="togglePartGroup('ligamentos')" title="Encender o apagar todos los ligamentos" aria-label="Ligamentos"></button>
+        <div class="panel-title">Ligamentos</div>
+      </div>
+      <button class="showButton" id="keyLcolatLat" onclick="showAndHide('Lig. colateral lateral', 'keyLcolatLat')">Lig. colateral lateral</button>
+      <button class="showButton" id="keyLcolatMed" onclick="showAndHide('Lig. colateral medial', 'keyLcolatMed')">Lig. colateral medial</button>
+      <button class="showButton" id="keyLanular" onclick="showAndHide('Lig. anular', 'keyLanular')">Lig. anular</button>
+      <button class="showButton" id="keyLolecranon" onclick="showAndHide('Lig. del olecranon', 'keyLolecranon')">Lig. del olécranon</button>
+      <button class="showButton" id="keyLinteroseo" onclick="showAndHide('Lig. interoseo', 'keyLinteroseo')">Lig. interóseo</button>
+      <button class="showButton" id="keyLoblicuo" onclick="showAndHide('Lig. oblicuo', 'keyLoblicuo')">Lig. oblícuo</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpMus" onclick="togglePartGroup('musculos')" title="Encender o apagar todos los músculos" aria-label="Músculos"></button>
+        <div class="panel-title">Músculos</div>
+      </div>
+      <button class="showButton" id="keyMsupinador" onclick="showAndHide('M. supinador', 'keyMsupinador')">M. supinador</button>
+      <button class="showButton" id="keyMpronador" onclick="showAndHide('M. pronador redondo', 'keyMpronador')">M. pronador redondo</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpTen" onclick="togglePartGroup('tendones')" title="Encender o apagar todos los tendones" aria-label="Tendones"></button>
+        <div class="panel-title">Tendones</div>
+      </div>
+      <button class="showButton" id="keyTbiceps" onclick="showAndHide('T. del m. biceps braquial', 'keyTbiceps')">T. del m. bíceps braquial</button>
+      <button class="showButton" id="keyTbraquial" onclick="showAndHide('T. del m. braquial', 'keyTbraquial')">T. del m. braquial</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-heading">
+        <button class="showButton panel-dot" id="keyGrpNer" onclick="togglePartGroup('nervios')" title="Encender o apagar todos los nervios" aria-label="Nervios"></button>
+        <div class="panel-title">Nervios</div>
+      </div>
+      <button class="showButton" id="keyNradial" onclick="showAndHide('N. radial', 'keyNradial')">N. radial</button>
+      <button class="showButton" id="keyNmediano" onclick="showAndHide('N. mediano', 'keyNmediano')">N. mediano</button>
+      <button class="showButton" id="keyNulnar" onclick="showAndHide('N. ulnar', 'keyNulnar')">N. ulnar</button>
+    </div>
   </div>
 
   <div class="img-container2"> <!-- logo esquina -->
-    <img src="../assets/img/logo-ucm.png">
+    <img src="../assets/img/logo-ucm.png" alt="Escudo UCM">
   </div>
 
   <div class="fill">
     <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
-      <img src="../assets/img/CreativeCommons.png">
+      <img src="../assets/img/CreativeCommons.png" alt="Creative Commons">
     </div>
   </div>
-  
+
+  <!-- Modal: Información / Instrucciones -->
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeInfoModal()"></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal__header">
+        <div id="infoModalTitle" class="modal__title">Codo canino · Guía rápida</div>
+      </div>
+      <div class="modal__content">
+        <h3>Controles de navegación</h3>
+        <ul class="modal__list">
+          <li><span class="material-symbols-outlined">left_click</span> Botón izquierdo: girar el modelo</li>
+          <li><span class="material-symbols-outlined">pan_tool</span> Botón derecho o central: desplazar en el plano</li>
+          <li><span class="material-symbols-outlined">attractions</span> Rueda: zoom</li>
+          <li><span class="material-symbols-outlined">info</span> Esta guía de uso</li>
+          <li><span class="material-symbols-outlined">edit_square</span> Mostrar u ocultar las anotaciones numeradas de Sketchfab y las zonas óseas grandes</li>
+          <li><span class="material-symbols-outlined">gamepad</span> Mostrar u ocultar la cruz de orientación (Cr., Cd., Lt., Md.)</li>
+        </ul>
+        <h3>Modelo 3D</h3>
+        <ul class="modal__list">
+          <li><span class="guide-dots" aria-hidden="true"><span class="guide-dot-empty"></span>/<span class="guide-dot-filled"></span></span> Apaga/enciende todas las estructuras de ese grupo</li>
+          <li>Al pasar el cursor, la estructura se ilumina.</li>
+          <li>Al hacer clic, aparece el nombre de esa pieza.</li>
+          <li>Los botones azules de la derecha encienden o apagan cada estructura.</li>
+          <li>Si se oculta un hueso, se ocultan también las anotaciones ligadas a ese hueso.</li>
+        </ul>
+      </div>
+      <div class="modal__footer">
+        <button class="modal__btn" onclick="closeInfoModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
   <script src="main.js"></script>
 </body>
-</html>
 
+</html>

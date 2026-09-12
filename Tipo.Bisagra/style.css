@@ -10,7 +10,7 @@ iframe {
 
 /* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
-  width: 160px;
+  width: min(160px, 100%);
 
 }
 
@@ -48,15 +48,20 @@ img {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+
   margin: 35px 5px;
   right: 0;
   top: 44px;
   z-index: 1;
   position: absolute;
+  box-sizing: border-box;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 button {
-  width: 160px;
+
   height: auto;
   min-height: 50px;
   padding:6px;
@@ -69,6 +74,17 @@ button {
   text-align: center;
   display: block;
   margin-top: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
 }
 
 /* Para poder elegir el color del boton cuando se enciende */
@@ -210,6 +226,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 /* ---------- Bottom sheet anatomía ---------- */
@@ -303,6 +321,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 .sheet__close:hover {
@@ -351,4 +371,31 @@ button:active {
 :root {
   --modal-accent: #007b00;   /* verde que tú elijas */
   --modal-accent-dark: #256f53;
+}
+
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
 }

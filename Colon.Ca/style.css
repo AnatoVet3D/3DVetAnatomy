@@ -49,7 +49,7 @@ img {
   opacity: 0.8;
 }
 
-/* Para elegir cómo se ven las etiquetas de los nombres*/
+/* Título de las fotos de endoscopia (esquina izq.) */
 label {
   color: black;
   background-color: white;
@@ -57,6 +57,35 @@ label {
   font-family: Verdana;
   font-size: 30px;
   font-weight: bold;
+}
+
+.name-bubble {
+  position: fixed;
+  z-index: 20;
+  transform: translate(-50%, calc(-100% - 12px));
+  background: #0b3a5a;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.25;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  max-width: 240px;
+  text-align: center;
+}
+
+.name-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  border-width: 7px 7px 0 7px;
+  border-style: solid;
+  border-color: #0b3a5a transparent transparent transparent;
 }
 
 /* Images style */
@@ -75,6 +104,7 @@ label {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+
   margin: 40px 5px;
   right: 0;
   top: 44px;
@@ -82,10 +112,13 @@ label {
   opacity: 0.8;
   z-index: 1;
   position: absolute;
+  box-sizing: border-box;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 button {
-  height: 50px;
+
   line-height: 21px;
   text-transform: capitalize;
   color: white;
@@ -95,6 +128,17 @@ button {
   vertical-align: middle;
   margin-top: 2px;
   background: #1caad9;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
 }
 
 button:active {
@@ -197,13 +241,34 @@ button:active {
   font-size: 16px;
 }
 
+.speed-control {
+  display: block;
+  margin: 6px 0 8px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.speed-control .panel-title {
+  color: #fff;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin: 0 0 6px 0;
+}
+
 /*Esto modifica tamaño del slider*/
 #speedSlider {
-  width: 200px;
+  width: 100%;
+  margin: 0;
+  accent-color: #1caad9;
 }
 
 .buttons div {
   display: flex;
+}
+.buttons div.speed-control {
+  display: block;
 }
 .buttons div button {
   width: 33%;
@@ -310,6 +375,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 /* ---------- Bottom sheet anatomía ---------- */
@@ -403,6 +470,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 .sheet__close:hover {
@@ -454,3 +523,30 @@ button:active {
 }
 
 
+
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
+}

@@ -1,7 +1,8 @@
 const model = '25e00808733e45b4af473b47b8873c12'; // Modelo de referencia a Sketchfab,este fichero cuando lo abres irá al modelo de ese código
 
 const filteredNodes = {}; // Objeto para guardar nombres de nodos, y si se debe mostrar o no. Ejemplo --> { "A" : { show: true, instanceId: 4} }
-let apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
+var apiRef; // Referencia a la api, para poder llamarla fuera del evetListener
+var parts = {}; // visibilidad lógica por botón (viewer-ui.js: círculos de grupo)
 
 //INICIO Sketchfab
 //Asi se llama a la versión de api que esté actualmente
@@ -30,6 +31,37 @@ const skullImages = [
 ];
 
 const skullViewNodes = [...skullBones, ...skullImages];
+
+// Círculos de grupo (Venas, Arterias, Hioides y Meatos quedan sueltos)
+var PART_GROUPS = {
+  bolsas: {
+    btnId: 'keyGrpBol',
+    parts: [
+      { name: 'BolsaGutural', btnId: 'keyE' },
+      { name: 'Diverticulo_TrompaAuditiva', btnId: 'keyG' }
+    ]
+  },
+  senos: {
+    btnId: 'keyGrpSen',
+    parts: [
+      { name: 'Seno_Conchofrontal', btnId: 'keyJ' },
+      { name: 'Seno_Esfenopalatino', btnId: 'keyK' },
+      { name: 'Seno_Etmoidal', btnId: 'keyL' },
+      { name: 'Seno_MaxilarCaudal', btnId: 'keyM' },
+      { name: 'Seno_MaxilarRostral', btnId: 'keyN' }
+    ]
+  }
+};
+
+parts.BolsaGutural = { visible: true, groupCode: 'BolsaGutural' };
+parts.Diverticulo_TrompaAuditiva = { visible: true };
+parts.Seno_Conchofrontal = { visible: true };
+parts.Seno_Esfenopalatino = { visible: true };
+parts.Seno_Etmoidal = { visible: true };
+parts.Seno_MaxilarCaudal = { visible: true };
+parts.Seno_MaxilarRostral = { visible: true };
+
+let skullOpacityMaterials = []; // materiales del cráneo para el slider
 
 // Configuración de qué se ve en cada botón P y Q
 const skullViews = {
@@ -86,6 +118,8 @@ error = function () {
             apiRef.hide(filteredNodes[nombreNodo].instanceId);
           }
         });
+        refreshAllGroupButtons();
+        cacheSkullOpacityMaterials(nodes);
         //Para ocultar las anotaciones desde el comienzo ya que el botón de Exploración comienza apagado
         for (let i = 0; i < 13; i++) { // R: Según el nº de anotaciones modificar el último número
           apiRef.hideAnnotation(i, function (err, index) {
@@ -112,6 +146,13 @@ error = function () {
     document.getElementById('keyQ').addEventListener('click', function () {
       apiRef.setCameraLookAt(camPos_Q, camTarget_Q, 2);
     });
+
+    const opacitySlider = document.getElementById('skullOpacity');
+    if (opacitySlider) {
+      opacitySlider.addEventListener('input', function () {
+        applySkullOpacity(this.value);
+      });
+    }
 
   };
 
@@ -160,21 +201,83 @@ function infoModalEscClose(e) {
 
 //Muestra/oculta un objeto al clicar un botón que cambia de color Ej: encéfalos
 function showAndHide(nodeName, buttonId = null) {
-  const btn = document.getElementById(buttonId);
   //console.log(filteredNodes); //R: esto sólo se descomenta para que en consola del navegador pueda ver como se llaman las partes del modelo y poder buscarlas.
-  filteredNodes[nodeName].show = !filteredNodes[nodeName].show;
-  if (filteredNodes[nodeName].show) {
-    if (buttonId) {
-      btn.classList.replace("hideButton", "showButton");
-    }
-    apiRef.show(filteredNodes[nodeName].instanceId)
+  const key = resolvePartKey(nodeName) || nodeName;
+  const visible = !isPartVisible(key);
+  setPartVisible(key, visible);
+  if (buttonId) setButtonOn(document.getElementById(buttonId), visible);
+}
+
+function setNodeVisibleByName(name, visible) {
+  const node = filteredNodes[name];
+  if (!node) return;
+  node.show = visible;
+  if (visible) apiRef.show(node.instanceId);
+  else apiRef.hide(node.instanceId);
+}
+
+function setPartVisible(key, visible, skipSync) {
+  if (!parts[key]) parts[key] = { visible: true };
+  parts[key].visible = visible;
+  const code = parts[key].groupCode;
+  if (code) {
+    findNodeGroups(code).forEach(function (name) {
+      setNodeVisibleByName(name, visible);
+    });
   } else {
-    if (buttonId) {
-      btn.classList.replace("showButton", "hideButton");
+    setNodeVisibleByName(key, visible);
+  }
+  if (!skipSync) refreshAllGroupButtons();
+}
+
+function isSkullNodeName(name) {
+  if (!name) return false;
+  return skullBones.some(function (bone) {
+    return name === bone || name.indexOf(bone) === 0;
+  });
+}
+
+function cacheSkullOpacityMaterials(nodes) {
+  if (!apiRef || !nodes) return;
+  const matIds = {};
+  const matIndexes = {};
+  for (const prop in nodes) {
+    if (!nodes.hasOwnProperty(prop)) continue;
+    const node = nodes[prop];
+    if (!node || !node.name || !isSkullNodeName(node.name)) continue;
+    if (node.materialID != null) matIds[node.materialID] = true;
+    if (typeof node.material === 'number') matIndexes[node.material] = true;
+    if (node.material && node.material.id != null) matIds[node.material.id] = true;
+    if (node.mesh && node.mesh.material != null) matIndexes[node.mesh.material] = true;
+  }
+  apiRef.getMaterialList(function (err, materials) {
+    if (err || !materials) return;
+    skullOpacityMaterials = materials.filter(function (mat, i) {
+      return mat && (matIds[mat.id] || matIndexes[i]);
+    });
+    if (!skullOpacityMaterials.length) {
+      skullOpacityMaterials = materials.filter(function (mat) {
+        return /hueso|bone|craneo|cráneo|skull/i.test(mat.name || '');
+      });
     }
-    apiRef.hide(filteredNodes[nodeName].instanceId)
-  };
-};
+    const slider = document.getElementById('skullOpacity');
+    if (!slider || !skullOpacityMaterials.length) return;
+    const mat = skullOpacityMaterials[0];
+    let factor = parseFloat(slider.value);
+    if (mat.channels && mat.channels.Opacity && typeof mat.channels.Opacity.factor === 'number') {
+      factor = mat.channels.Opacity.factor;
+    }
+    slider.value = factor;
+  });
+}
+
+function applySkullOpacity(value) {
+  if (!apiRef || !skullOpacityMaterials.length) return;
+  const alpha = parseFloat(value);
+  skullOpacityMaterials.forEach(function (mat) {
+    if (setMaterialOpacityFactor(mat, alpha)) apiRef.setMaterial(mat);
+  });
+}
 
 //Para mostrar/ocultar las anotaciones Sketchfab cuando se muestra/apaga pestaña "Exploración"
 let showToolTip = false;

@@ -10,7 +10,7 @@ iframe {
 
 /* Para modificar posición y tamaño boton veterinaria UCM */
 .img-container1 {
-  width: 160px;
+  width: min(160px, 100%);
 
 }
 
@@ -49,11 +49,16 @@ img {
 
 /* Button style, Para cambiar el estilo de los botones */
 .buttons {
+
   margin: 35px 5px;
   right: 0;
   top: 44px;
   z-index: 1;
   position: absolute;
+  box-sizing: border-box;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 .button-container {
@@ -63,8 +68,99 @@ img {
   margin-bottom: 5px;
 }
 
+/* Agrupación visual de botones azules por sistema */
+.panel {
+  background: rgba(18, 18, 18, 0.42);
+  border-radius: 8px;
+  padding: 6px 6px 8px;
+  margin-bottom: 8px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.panel-title {
+  color: #fff;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin: 0 0 4px 4px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 2px;
+}
+
+.panel-heading .panel-title {
+  margin: 0;
+}
+
+.panel button {
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.panel button.panel-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.opacity-control {
+  background: rgba(18, 18, 18, 0.42);
+  border-radius: 8px;
+  padding: 6px 8px 10px;
+  margin: 4px 0 8px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.opacity-control .panel-title {
+  margin: 0 0 6px 0;
+}
+
+.opacity-control input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: #1caad9;
+}
+
+.guide-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight: bold;
+  font-size: clamp(18px, 2.4vw, 26px);
+}
+
+.guide-dot-empty,
+.guide-dot-filled {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.guide-dot-empty {
+  border: 2px solid currentColor;
+  background: transparent;
+}
+
+.guide-dot-filled {
+  background: #000;
+}
+
 button {
-  width: 160px;
+
   height: auto;
   min-height: 50px;
   padding:6px;
@@ -77,6 +173,17 @@ button {
   text-align: center;
   display: block;
   margin-top: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
 }
 
 /* Para poder elegir el color del boton cuando se enciende */
@@ -224,6 +331,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 /* ---------- Bottom sheet anatomía ---------- */
@@ -314,6 +423,8 @@ button:active {
   font-family: Verdana;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
+  min-height: auto;
 }
 
 .sheet__close:hover {
@@ -362,4 +473,40 @@ button:active {
 :root {
   --modal-accent: #007b00;   /* verde que tú elijas */
   --modal-accent-dark: #256f53;
+}
+
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  .panel {
+    padding: 5px 4px 6px;
+  }
+
+  .panel-title {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
 }
