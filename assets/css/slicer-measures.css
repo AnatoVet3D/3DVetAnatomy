@@ -1,0 +1,233 @@
+/* Overlay SVG: líneas y puntos de las medidas encima del visor */
+.measure-layer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.measure-line-bg {
+  fill: none;
+  stroke: #111;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.measure-line {
+  fill: none;
+  stroke: #3ef0f0;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.measure-dot {
+  fill: #fff45c;
+  stroke: #111;
+  stroke-width: 2;
+}
+
+/* Caja HTML de las etiquetas (nombre + valor) ancladas a cada línea */
+.measure-labels {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.measure-leader {
+  display: none;
+}
+
+.measure-label {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  background: #0b3a5a;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 10px;
+  line-height: 1.2;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  white-space: normal;
+  max-width: 118px;
+  text-align: center;
+}
+
+.measure-label .measure-name {
+  display: block;
+}
+
+.measure-label .measure-val {
+  display: block;
+  color: #3ef0f0;
+  font-weight: bold;
+}
+
+.measure-label[hidden] {
+  display: none;
+}
+
+/* Menú Medidas: botón cuadrado + panel desplegable con interruptores */
+.tool-row > .measure-menu,
+.measure-menu {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+.measure-menu[hidden] {
+  display: none;
+}
+
+.tool-row.no-measures {
+  grid-template-columns: 1fr;
+}
+
+/* Botón cuadrado de Medidas (icono straighten), en la misma fila que info */
+.measure-toggle {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  height: 40px;
+  margin-top: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.measure-toggle .material-symbols-outlined {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.showKey.measure-toggle,
+.hideButton.measure-toggle {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Panel que se abre a la izquierda al pulsar Medidas */
+.measure-panel {
+  position: fixed;
+  width: 272px;
+  max-height: min(62vh, 420px);
+  overflow-y: auto;
+  padding: 12px 14px 10px;
+  border-radius: 12px;
+  background: #2a2a2e;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  pointer-events: auto;
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.measure-panel[hidden] {
+  display: none;
+}
+
+.measure-panel-title {
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.measure-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.measure-row-name {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+/* Interruptor naranja (#df9a4b) de cada medida; se genera en buildMeasureItemButtons() */
+.measure-switch {
+  position: relative;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 20px;
+}
+
+.measure-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.measure-switch-ui {
+  position: absolute;
+  inset: 0;
+  background: #5c5c62;
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+
+.measure-switch-ui::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.measure-switch input:checked + .measure-switch-ui {
+  background: #df9a4b;
+}
+
+.measure-switch input:checked + .measure-switch-ui::after {
+  transform: translateX(16px);
+}
+
+@media (max-width: 768px) {
+  .measure-label {
+    font-size: 9px;
+    padding: 2px 4px;
+    max-width: 96px;
+  }
+
+  .measure-toggle {
+    min-height: 34px;
+    height: 34px;
+  }
+
+  .measure-toggle .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .measure-panel {
+    width: 230px;
+    max-height: 52vh;
+    padding: 10px 12px 8px;
+  }
+
+  .measure-panel-title {
+    font-size: 14px;
+  }
+
+  .measure-row-name {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,79 @@
+{
+    "@schema": "https://raw.githubusercontent.com/slicer/slicer/master/Modules/Loadable/Markups/Resources/Schema/markups-schema-v1.0.4.json#",
+    "markups": [
+        {
+            "type": "Line",
+            "coordinateSystem": "LPS",
+            "coordinateUnits": "mm",
+            "locked": false,
+            "fixedNumberOfControlPoints": false,
+            "labelFormat": "%N-%d",
+            "lastUsedControlPointNumber": 2,
+            "controlPoints": [
+                {
+                    "id": "1",
+                    "label": "L_4-1",
+                    "description": "",
+                    "associatedNodeID": "",
+                    "position": [-6.404151916503906, -36.71866226196289, -341.5447998046875],
+                    "orientation": [-1.0, -0.0, -0.0, -0.0, -1.0, -0.0, 0.0, 0.0, 1.0],
+                    "selected": true,
+                    "locked": false,
+                    "visibility": true,
+                    "positionStatus": "defined"
+                },
+                {
+                    "id": "2",
+                    "label": "L_4-2",
+                    "description": "",
+                    "associatedNodeID": "",
+                    "position": [1.5734930038452148, -39.756141662597656, -338.2792053222656],
+                    "orientation": [-1.0, -0.0, -0.0, -0.0, -1.0, -0.0, 0.0, 0.0, 1.0],
+                    "selected": true,
+                    "locked": false,
+                    "visibility": true,
+                    "positionStatus": "defined"
+                }
+            ],
+            "measurements": [
+                {
+                    "name": "length",
+                    "enabled": true,
+                    "value": 9.139650261803066,
+                    "units": "mm",
+                    "printFormat": "%-#4.4gmm"
+                }
+            ],
+            "display": {
+                "visibility": false,
+                "opacity": 1.0,
+                "color": [0.4, 1.0, 1.0],
+                "selectedColor": [1.0, 0.500008, 0.500008],
+                "activeColor": [0.4, 1.0, 0.0],
+                "propertiesLabelVisibility": true,
+                "pointLabelsVisibility": false,
+                "textScale": 3.0,
+                "glyphType": "Sphere3D",
+                "glyphScale": 0.4,
+                "glyphSize": 5.0,
+                "useGlyphScale": true,
+                "sliceProjection": false,
+                "sliceProjectionUseFiducialColor": true,
+                "sliceProjectionOutlinedBehindSlicePlane": false,
+                "sliceProjectionColor": [1.0, 1.0, 1.0],
+                "sliceProjectionOpacity": 0.6,
+                "lineThickness": 0.2,
+                "lineColorFadingStart": 1.0,
+                "lineColorFadingEnd": 10.0,
+                "lineColorFadingSaturation": 1.0,
+                "lineColorFadingHueOffset": 0.0,
+                "handlesInteractive": false,
+                "translationHandleVisibility": true,
+                "rotationHandleVisibility": true,
+                "scaleHandleVisibility": false,
+                "interactionHandleScale": 3.0,
+                "snapMode": "toVisibleSurface"
+            }
+        }
+    ]
+}

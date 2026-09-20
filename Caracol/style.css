@@ -1,0 +1,295 @@
+body {
+  margin: 0;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Para modificar posición y tamaño boton veterinaria UCM */
+.img-container1 {
+  width: min(160px, 100%);
+
+}
+
+/* Para modificar posición y tamaño Escudo UCM */
+.img-container2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 122px;
+  z-index: 2;
+}
+
+/* Para modificar posición y tamaño Creative Commons*/
+.img-container3 {
+  position: absolute;
+  bottom: 12px;
+  right: 22px;
+  width: 122px;
+}
+
+/*Tapete botones Sketchfab*/
+.fill{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  height: 50px;
+  width: 200px;
+  z-index: 2;
+}
+
+/* Para elegir opacidad de las imagenes de los logos */
+img {
+  width: 100%;
+  opacity: 0.8;
+}
+
+/* Fila de iconos (info / medidas): siempre una sola línea, botones cuadrados */
+.tool-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 4px 0 8px;
+}
+
+.tool-row button {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  height: 40px;
+  margin-top: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.tool-row .material-symbols-outlined {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Columna de botones a la dch (logo + iconos + piezas) */
+.buttons {
+
+  margin: 35px 5px;
+  right: 0;
+  top: 44px;
+  z-index: 3;
+  position: absolute;
+  box-sizing: border-box;
+  width: 168px;
+  max-height: calc(100vh - 90px);
+  overflow: visible;
+}
+
+/* Lista de piezas: se genera en JS; mismo margen entre todos los botones */
+#structureButtons {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+#structureButtons button {
+  margin-top: 2px;
+  margin-bottom: 0;
+  min-height: 36px;
+}
+
+button {
+
+  height: auto;
+  min-height: 50px;
+  padding:6px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: white;
+  opacity: 0.8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  display: block;
+  margin-top: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  cursor: pointer;
+}
+
+/* Para poder elegir el color del boton cuando se enciende */
+.showButton {
+  background: #1caad9;
+}
+
+.showKey{
+  background: #6fc24e;
+}
+
+/* Botón naranja de información (igual que en los otros visores) */
+.symbols {
+  background: #df9a4b;
+}
+/* Para poder elegir el color del boton cuando se apaga */
+.hideButton {
+  background: #888888;
+}
+
+/*Esto hace que cuando pasa el raton por encima se ilumine levemente el botón*/
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  font-weight: bold;
+}
+
+/* ---------- Modal Info (misma guía que Codo / Abdomen) ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+}
+
+.modal.is-open {
+  display: block;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal__panel {
+  position: relative;
+  width: min(860px, 92vw);
+  max-height: 86vh;
+  margin: 6vh auto 0 auto;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--modal-accent);
+  color: white;
+}
+
+.modal__title {
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: bold;
+  color: white;
+}
+
+.modal__content {
+  padding: 14px 16px;
+  overflow: auto;
+  max-height: 66vh;
+  color: black;
+  font-size: clamp(12.5px, 1.6vw, 15px);
+  line-height: 1.35;
+}
+
+.modal__content h3 {
+  margin: 10px 0 6px 0;
+}
+
+.modal__list {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0 0 0;
+}
+
+.modal__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+.modal__list .material-symbols-outlined {
+  font-size: clamp(18px, 2.4vw, 26px);
+}
+
+.modal__footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal__btn {
+  background: #df9a4b;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  width: auto;
+  min-height: auto;
+}
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 108px;
+    top: 8px;
+    margin: 8px 4px 8px 0;
+    max-height: calc(100vh - 52px);
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 3px;
+    min-height: 32px;
+    height: auto;
+  }
+
+  .tool-row {
+    gap: 3px;
+  }
+
+  .tool-row button {
+    min-height: 34px;
+    height: 34px;
+  }
+
+  .tool-row .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .img-container2,
+  .img-container3 {
+    width: 64px;
+  }
+
+  .fill {
+    width: 108px;
+    height: 36px;
+  }
+}
+
+:root {
+  --modal-accent: #007b00;
+  --modal-accent-dark: #256f53;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caracol</title> <!-- Nombre que queremos que salga en la pestaña del navegador -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/slicer-measures.css"> <!-- Estilos reutilizables del visor de medidas 3D Slicer -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <iframe style="position:fixed; width:100%; height:100%; border:0" src="" id="api-frame"
+    sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; vr" allowvr
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <!-- Overlay de medidas: líneas SVG + etiquetas HTML ancladas al 3D (se rellenan desde slicer-measures.js) -->
+  <svg id="measureLayer" class="measure-layer" aria-hidden="true"></svg>
+  <div id="measureLabels" class="measure-labels"></div>
+
+  <div class="buttons"> <!--Estos son los botones que salen a la dch de la pantalla -->
+
+    <div class="img-container1"> <!-- Si logo encima de letras -->
+      <img src="../assets/img/boton-vet-ucm.png">
+    </div>
+
+    <!-- Fila de iconos: info (showInfo) y medidas (toggleMeasurePanel). Los interruptores se generan solos -->
+    <div class="tool-row">
+      <button type="button" class="symbols" id="buttonC" onclick="showInfo()" title="Información">
+        <span class="material-symbols-outlined">info</span>
+      </button>
+      <div class="measure-menu">
+        <button type="button" class="hideButton measure-toggle" id="keyMedidas" onclick="toggleMeasurePanel(event)" title="Medidas">
+          <span class="material-symbols-outlined">straighten</span>
+        </button>
+        <!-- Lista de medidas: buildMeasureItemButtons() la rellena a partir de los .mrk.json -->
+        <div id="measureItemButtons" class="measure-panel" hidden>
+          <p class="measure-panel-title">Medidas</p>
+          <div id="measureItemList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="structureButtons"></div> <!-- Botones de piezas: los crea buildStructureButtons() -->
+
+  </div>
+
+  <div class="img-container2"> <!-- logo esquina -->
+    <img src="../assets/img/logo-ucm.png">
+  </div>
+
+  <div class="fill">
+    <div class="img-container3"> <!-- CreativeCommons esquina inferior-->
+      <img src="../assets/img/CreativeCommons.png">
+    </div>
+  </div>
+
+  <!-- Modal: Información / Instrucciones (showInfo / closeInfoModal) -->
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeInfoModal()"></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal__header">
+        <div id="infoModalTitle" class="modal__title">Caracol · Guía rápida</div>
+      </div>
+      <div class="modal__content">
+        <h3>Controles de navegación</h3>
+        <ul class="modal__list">
+          <li><span class="material-symbols-outlined">left_click</span> Botón izquierdo: girar el modelo</li>
+          <li><span class="material-symbols-outlined">pan_tool</span> Botón derecho o central: desplazar en el plano</li>
+          <li><span class="material-symbols-outlined">attractions</span> Rueda: zoom</li>
+          <li><span class="material-symbols-outlined">info</span> Esta guía de uso</li>
+          <li><span class="material-symbols-outlined">straighten</span> Abrir o cerrar la lista de medidas</li>
+        </ul>
+        <h3>Modelo 3D</h3>
+        <ul class="modal__list">
+          <li>Los botones azules de la derecha encienden o apagan cada estructura.</li>
+          <li>En Medidas, activa solo la que quieras ver sobre el modelo.</li>
+        </ul>
+      </div>
+      <div class="modal__footer">
+        <button class="modal__btn" onclick="closeInfoModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+  <script src="../assets/js/slicer-measures.js"></script> <!-- startSlicerMeasurements, toggleMeasurePanel -->
+  <script src="main.js"></script>
+</body>
+</html>
